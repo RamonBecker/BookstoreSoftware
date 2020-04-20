@@ -21,15 +21,14 @@ def post_detail (request, pk):
     post.views += 1
     post.save()
 
-    cont_users_total = User.objects.all().count()
 
     cont_likes_total = post.likes_count()
 
     cont_deslikes_total = post.deslikes_count()
 
-    percentApproval = cont_likes_total - cont_deslikes_total / 100
+    percentApproval = cont_likes_total / ( cont_likes_total + cont_deslikes_total) * 100
 
-    percentDisapproval = cont_deslikes_total - cont_likes_total  / 100
+    percentDisapproval = cont_deslikes_total / ( cont_deslikes_total +  cont_likes_total) * 100
 
     if percentApproval < 0:
         percentApproval = 0
