@@ -1,6 +1,6 @@
 import datetime
 from django.utils import timezone
-from .models import Post, Comment
+from .models import Post, Comment, PostLike, Opinion, User
 from django.shortcuts import render, get_object_or_404, redirect
 from .forms import PostForm, CommentForm
 from django.contrib.auth.decorators import login_required
@@ -17,7 +17,33 @@ def post_list(request):
 @login_required
 def post_detail (request, pk):
     post = get_object_or_404(Post, pk=pk)
-    return render(request, 'blog/post_detail.html', {'post': post})
+
+    post.views += 1
+    post.save()
+
+    cont_users_total = User.objects.all().count()
+
+    cont_likes_total = post.likes_count()
+
+    cont_deslikes_total = post.deslikes_count()
+
+    percentApproval = cont_likes_total - cont_deslikes_total / 100
+
+    percentDisapproval = cont_deslikes_total - cont_likes_total  / 100
+
+    if percentApproval < 0:
+        percentApproval = 0
+    
+    elif percentDisapproval < 0:
+        percentDisapproval = 0
+
+    print('Aprroval:', percentApproval)
+    print('Disapprova: ',percentDisapproval)
+
+    return render(request, 'blog/post_detail.html',{'post': post, 'approval': percentApproval, 'disapproval': percentDisapproval})
+
+
+
 
 @login_required
 def post_new(request):
@@ -69,7 +95,60 @@ def post_remove(request, pk):
     post.delete()
     return redirect('post_list')
 
+@login_required
+def post_like(request, pk):
 
+    try:
+        op = Opinion.objects.filter(post_id = pk, user= request.user).values()
+
+
+        if len(op) == 0 :
+            opinion = Opinion.objects.create(post_id=pk, user= request.user, like = 1, deslike = 0)
+            opinion.save()
+
+        else:
+            print(op[0]['id'])
+            auxOp = Opinion.objects.get(id = op[0]['id'])
+          
+            if auxOp.deslike >= 1:
+                auxOp.deslike -=1
+                auxOp.like += 1
+            
+            auxOp.save()
+
+    except Opinion.DoesNotExist :
+        opinion = Opinion.objects.create(post_id=pk, user= request.user, like = 1, deslike = 0)
+        opinion.save()
+
+    return redirect('post_detail', pk = pk) 
+
+
+@login_required
+def post_deslike(request, pk):
+
+    try:
+        op = Opinion.objects.filter(post_id = pk, user= request.user).values()
+
+
+        if len(op) == 0 :
+            opinion = Opinion.objects.create(post_id=pk, user= request.user, like = 0, deslike = 1)
+            opinion.save()
+
+        else:
+            auxOp = Opinion.objects.get(id = op[0]['id'])
+            if auxOp.like >= 1:
+                auxOp.deslike +=1
+                auxOp.like -= 1
+            
+            auxOp.save()
+
+    except Opinion.DoesNotExist :
+        opinion = Opinion.objects.create(post_id=pk, user= request.user, like = 0, deslike = 1)
+        opinion.save()
+
+    return redirect('post_detail', pk = pk) 
+
+@login_required
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":

@@ -19,6 +19,41 @@
         {% endif %}
         <h2>{{ post.title }}</h2>
         <p>{{ post.text|linebreaksbr }}</p>
+        <div class="date heart">{{post.views}} views &nbsp; | &nbsp;
+
+            <a href="{% url 'post_like' pk=post.pk %}"> 
+                
+                {% if liked %}
+            <!----    <span class="glyphicon glyphicon-heart liked"></span></a> -->
+            <span class="glyphicon glyphicon-thumbs-up liked"></span></a>
+            
+                {% else %}
+                <span class="glyphicon glyphicon-thumbs-up"></span></a>
+                {% endif %}
+            
+               
+                {{post.likes_count}} 
+           
+
+                | &nbsp;
+            <a href="{% url 'post_deslike' pk=post.pk %}">
+              <span class="glyphicon glyphicon-thumbs-down"></span>
+
+            </a>
+
+            {{post.deslikes_count}}
+           
+            | &nbsp; 
+
+            
+        </div>
+
+        <div class="heart"> 
+            Aprovação:  {{approval | floatformat:2}} %
+            Reprovação: {{disapproval | floatformat:2}} %
+           
+        </div>
+        
     </div>
 
     <hr>
