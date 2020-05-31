@@ -1,5 +1,5 @@
 import os
-from .local_settings import *
+#from .local_settings import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -64,10 +64,10 @@ WSGI_APPLICATION = 'mysite.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME':DB_NAME,
-        'USER' : DB_USER,
-        'PASSWORD': DB_PASSWORD,
-        'HOST': DB_HOST,
+        'NAME':'blog,
+        'USER' : 'becker,
+        'PASSWORD': '2622lbs1999',
+        'HOST': 'localhost',
         'PORT':'',
     }
 }
