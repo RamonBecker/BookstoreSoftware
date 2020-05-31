@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+
+<body>
+
+<header>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
+    <div class="container">
+      <a class="navbar-brand" href="/">Livraria</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class = "collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+
+          <li class="nav-item active">
+            <a nav-link href="/">Conheça nosso blog
+            <span class="material-icons">article</span>
+          </a>
+          </li>
+
+             <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Serviços</a>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'livraria:livrariacadastrarproduto' %}" class="dropdown-item">Cadastrar Produto</a>
+                        <a href="{% url 'livraria:livrariacadastrareditora' %}" class="dropdown-item">Cadastrar Editora</a>
+                        <a href="{% url 'livraria:livrariaexibirlivros' %}" class="dropdown-item">Meus Livros e empréstimos</a>
+                    </div>
+                </li>
+            {% if user.is_authenticated %}
+
+            <li class="nav-item">
+                <div id="nameUser">
+                    <p>Seja bem vindo, {{ user.username }}</p>
+                </div>
+            </li>
+
+
+
+
+            <li class="nav-item">
+                <a href="{% url 'logout' %}">
+                <button type="button"  class="btn btn-primary btn-sm">
+                    <span class="material-icons">input</span>
+                    Sair
+                 </button>
+                </a>
+            </li>
+
+            {% else %}
+             <a href="{% url 'login' %}" class="top-menu"><span class="material-icons">lock</span></a>
+            {% endif %}
+        </ul>
+      </div>
+    </div>
+      </nav>
+  </nav>
+</header>
+
+    {% block content %}
+    {% endblock %}
+</body>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script type="text/javascript" src="{% static 'js/javascript.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/d3js/5.15.1/d3.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</html>

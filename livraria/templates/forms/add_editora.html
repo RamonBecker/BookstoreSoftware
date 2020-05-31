@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+
+{% block content %}
+
+
+   <div class="row justify-content-md-center h-200">
+      <h2>Cadastrar Editora</h2>
+    </div>
+ 
+
+   <form method="POST" action="{% url 'livraria:livrariacadastrareditora' %}" autocomplete="off">
+    <div class="row justify-content-md-center h-200">
+    <div class="form-group col-md-4">
+    {% if messages %}
+    {% for message in messages %}
+
+    <div class="alert alert-danger" role="alert">
+        <strong>Aviso !</strong> {{message}}
+    </div>
+    {% endfor %}
+{% endif %}
+</div>
+</div>
+    {% csrf_token %}
+
+
+    <div class="row justify-content-md-center h-200">
+
+        <div class="form-group col-md-4">
+            {{ editoraForm.nome|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center h-200">
+        <div class="form-group col-md-4">
+            {{ enderecoForm.rua|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center h-200">
+        <div class="form-group col-md-4 mb-0">
+            {{ enderecoForm.bairro|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center h-200">
+        <div class="form-group col-md-4 mb-0">
+            {{ enderecoForm.estado|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center h-200">
+        <div class="form-group col-md-4 mb-0">
+            {{ enderecoForm.cidade|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center h-200">
+        <div class="form-group col-md-4 mb-0">
+            {{ enderecoForm.numero|as_crispy_field }}
+        </div>
+    </div>
+
+    <div class="row justify-content-md-center h-200">
+        <div class="form-group col-md-4">
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+        </div>
+    </div>
+
+    </form>
+
+{% endblock %}

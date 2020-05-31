@@ -26,9 +26,15 @@ def post_detail (request, pk):
 
     cont_deslikes_total = post.deslikes_count()
 
-    percentApproval = cont_likes_total / ( cont_likes_total + cont_deslikes_total) * 100
+    percentApproval = 0
+    percentDisapproval = 0
 
-    percentDisapproval = cont_deslikes_total / ( cont_deslikes_total +  cont_likes_total) * 100
+    if not cont_likes_total == 0 and cont_deslikes_total == 0 : 
+
+        percentApproval = cont_likes_total / ( cont_likes_total + cont_deslikes_total) * 100
+
+        percentDisapproval = cont_deslikes_total / ( cont_deslikes_total +  cont_likes_total) * 100
+
 
     if percentApproval < 0:
         percentApproval = 0

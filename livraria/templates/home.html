@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+ <div class="container" >
+  <div class="jumbotron jumbotron-fluid" id="jumbotron">
+    <div class="container">
+      <h1 class="display-4">Bem vindo a Livraria</h1>
+      <p class="lead">    “Há livros escritos para evitar espaços vazios na estante.” - Carlos Drummond de Andrade</p>
+    </div>
+  </div>
+  <div class="row">
+
+
+    {% for livro in livros %}
+    <!-- 
+    <div class="col-md4">
+      -->
+    <div id="EspacoCard"> </div>
+      <div class="card mb-3   text-white bg-dark" >
+    
+        <div class="card-body">
+          <h5 class="card-title">Nome do livro: {{livro.nome}}</h5>
+          <p class="card-text">Autor: {{livro.autor.nome}}</p>
+          <p class="card-text">Editora: {{livro.editora.nome}}</p>
+          <p class="card-text">Descrição do livro: {{livro.descricao}}</p>
+        </div>
+        <ul class="list-group">
+          <li class="list-group-item" id="textoCard">Categoria: {{livro.categoria.nome}}</li>
+          <li class="list-group-item" id="textoCard">Número de páginas: {{livro.num_paginas}}</li>
+          <li class="list-group-item" id="textoCard">Ano de lançamento: {{livro.ano}}</li>
+          <li class="list-group-item" id="textoCard">Preço: {{livro.preco}}</li>
+          <li class="list-group-item" id="textoCard">Quantidade disponível: {{livro.estoque}}</li>
+        </ul>
+        <div class="card-body">
+          <a href="{% url 'livraria:livrariaemprestimolivro' livro.id %}" class="btn btn-primary ">Realizar empréstimo</a>
+        </div>
+    </div>
+   
+ 
+    {% endfor %}
+ 
+  </div>
+
+{% endblock %}

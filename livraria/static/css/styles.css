@@ -1,0 +1,51 @@
+
+.material-icons.md-dark { color: rgba(0, 0, 0, 0.54); }
+.material-icons.md-dark.md-inactive { color: rgba(0, 0, 0, 0.26); }
+
+.material-icons.md-light { color: rgba(255, 255, 255, 1); }
+.material-icons.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+#nameUser{
+    font-size:16px;
+    color: #ffffff;
+
+}
+
+#termo:disabled{
+   /*display:none; mantem a div escondida no inicio da página */
+   visibility: hidden;
+  }
+
+
+#containerDetalheProduto {
+    width: 100vw;
+    height: 150vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center
+}
+#boxDetalheProduto{
+    width: 800px;
+    height: 800px;
+  }
+
+#textoCard{
+  color:#000000 ;
+}
+
+
+#jumbotron {
+	background-color:#363636;
+	color: #FFF;
+	margin-top: 50px;
+}
+
+#EspacoCard{
+  padding-left:1px;
+  padding-right: 1px;
+}
+
+#id{
+  display: none;
+}

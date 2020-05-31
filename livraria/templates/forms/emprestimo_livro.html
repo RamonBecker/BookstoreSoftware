@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<div class="row justify-content-md-center h-200">
+    <h2>Empréstimo</h2>
+</div>
+
+
+<div class="row justify-content-md-center h-200">
+
+    <form method="POST"  class="form-group mb-4 w-50 p3" autocomplete="off" >
+        {% csrf_token %}        
+
+        {% if messages %}
+        {% for message in messages %}
+          
+        <div class="alert alert-danger" role="alert">
+           <strong>Aviso !</strong> {{message}}
+         </div>
+        {% endfor %}
+   {% endif %}
+   
+        {{ form_emprestimo|crispy }}
+
+
+
+        <button type="submit" class="btn btn-primary sm">Salvar</button>
+    </form>
+</div>
+{{ val }}
+
+<div class="row justify-content-md-center h-200">
+    <div id="EspacoCard"> </div>
+
+    <div class="card col-3 mb-7 text-white bg-dark">
+        <div class="card-body">
+            <h5 class="card-title">Nome do livro: {{livro.nome}}</h5>
+            <p class="card-text">Autor: {{livro.autor.nome}}</p>
+            <p class="card-text">Editora: {{livro.editora.nome}}</p>
+            <p class="card-text">Descrição do livro: {{livro.descricao}}</p>
+
+        </div>
+        <ul class="list-group">
+            <li class="list-group-item" id="textoCard">Preço: {{livro.preco}}</li>
+            <li class="list-group-item" id="textoCard">Quantidade em estoque: {{livro.estoque}}</li>
+        </ul>
+    </div>
+
+</div>
+
+{% endblock %}
