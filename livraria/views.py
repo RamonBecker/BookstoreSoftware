@@ -6,6 +6,8 @@ from datetime import date
 from django.utils import timezone
 
 
+'''
+
 from .forms import LivroForm, EditoraForm, EnderecoForm, AutorForm
 from .models import Editora, Endereco, Autor, Livro, Categoria, EmprestimoLivro
 from .forms import Livro_Emprestimo_Form, EmprestimoForm
@@ -278,3 +280,5 @@ def livraria_devolver_livro(request, pk):
     livro.save()
     emprestimo.save()
     return redirect('livraria:livrariaexibirlivros')
+
+'''

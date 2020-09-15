@@ -4,7 +4,58 @@ from django.conf import settings
 from django.utils import timezone
 
 
+from django.contrib.auth.models import AbstractUser, BaseUserManager 
 
+
+class UsuarioManager(BaseUserManager):
+    use_in_migrations = True  # Estamos avisando ao Django, que esse será o nosso modelo que usaremos em nosso banco
+
+    # de dados
+
+    def _create_user(self, email, password, **extra_fields):
+        if not email:
+            raise ValueError('O e-mail é obrigatório')
+        email = self.normalize_email(email)
+        user = self.model(email=email, username=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    # Fazendo método para criar usuário comum
+    def create_user(self, email, password=None, **extra_fields):
+        # extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(email, password, **extra_fields)
+
+    # Fazendo método para criar super usuário
+    def create_superuser(self, email, password, **extrafields):
+        extrafields.setdefault('is_superuser', True)
+        extrafields.setdefault('is_staff', True)
+
+        # Verificando se é super usuario
+        if extrafields.get('is_superuser') is not True:
+            raise ValueError('Super usuário precisa ter is_superuser como True')
+        # Se for false o usuário não terá acesso ao painel administrativo do Django
+        if extrafields.get('is_staff') is not True:
+            raise ValueError('Super usuário precisa ter is_staff como True')
+
+        return self._create_user(email, password, **extrafields)
+
+
+class CustomUsuario(AbstractUser):
+    email = models.EmailField('E-mail', unique=True)
+    fone = models.CharField('Telefone', max_length=15)
+    is_staff = models.BooleanField('Membro da equipe', default=True)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'fone']
+
+
+    def __str__(self):
+        return self.email
+
+    objects = UsuarioManager()
+'''
 class Produto(models.Model):
     nome = models.CharField('Nome', max_length=100)
     preco = models.DecimalField('Preco', max_digits=8, decimal_places=2)
@@ -67,3 +118,5 @@ class EmprestimoLivro(models.Model):
 
     def __str__(self):
         return "'{}'-{}-{}-{}-{}-{}-{}".format(self.user, self.livro, self.data_inicial, self.data_devolucao, self.preco, self.ativo, self.quantidade)
+
+'''

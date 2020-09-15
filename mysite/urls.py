@@ -6,9 +6,9 @@ from django.contrib.auth import views
 urlpatterns = [
   
     path('admin/', admin.site.urls),
-  
-    path('accounts/login/', views.LoginView.as_view(), name='login'),
-    path('accounts/logout/', views.LogoutView.as_view(next_page='/'), name='logout'),
-    path('', include('blog.urls')),  
-    path('livraria', include('livraria.urls')),
+    path('conta/',include('django.contrib.auth.urls')),
+   # path('accounts/login/', views.LoginView.as_view(), name='login'),
+   # path('accounts/logout/', views.LogoutView.as_view(next_page='/'), name='logout'),
+    path('blog', include('blog.urls'), name='blog'),  
+    path('', include('livraria.urls')),
 ]

@@ -51,7 +51,7 @@ class Post(models.Model): # Utilizando Herança com Python Post é um Model
 class Opinion(models.Model):
     like = models.IntegerField(default=0)
     deslike = models.IntegerField(default=0)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name='opinion')
     create_date = models.DateTimeField(auto_now=True)
     
@@ -59,7 +59,7 @@ class Opinion(models.Model):
         return "'{}' '{}' '{}' '{}'".format(self.post.title, self.user,self.like,self.deslike)
 
 class PostLike(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey('blog.Post', on_delete=models.CASCADE)
     create_date = models.DateTimeField(auto_now=True)
 

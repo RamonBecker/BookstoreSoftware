@@ -1,7 +1,40 @@
-from django import forms
-from livraria.models import Livro, Editora, Endereco, Autor, EmprestimoLivro
-from django.utils import timezone
-from datetime import date
+#from django import forms
+#from livraria.models import Livro, Editora, Endereco, Autor, EmprestimoLivro
+#from django.utils import timezone
+#from datetime import date
+'''
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import CustomUsuario
+
+
+class CustomUsuarioCreationForm(UserCreationForm):
+    class Meta:
+        model = CustomUsuario
+        fields = ('first_name', 'last_name', 'fone')
+        labels = {'username': 'Username/E-mail'}
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data['password1'])
+        user.email = self.cleaned_data['username']
+
+        if commit:
+            user.save()
+
+        return user
+
+
+class CustomUsuarioChangeForm(UserChangeForm):
+
+    class Meta:
+        model = CustomUsuario
+        fields = ('first_name', 'last_name', 'fone')
+
+
+'''
+
+
+'''
 
 CATEGORIAS_LIVROS = [
     ('','Selecione'),
@@ -58,4 +91,4 @@ class Livro_Emprestimo_Form(forms.ModelForm):
         model = Livro
         fields = ('nome',)
 
-
+'''
