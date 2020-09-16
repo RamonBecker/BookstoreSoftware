@@ -9,11 +9,13 @@ from django.contrib import admin
 
 #from .views import livraria_realizar_emprestimo, livraria_devolver_livro
 from django.views.generic.base import TemplateView
+from .views import SignUpView
 
 app_name = 'livraria'
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('registrousuario', SignUpView.as_view(), name='registeruser'),
     #path('', livraria_base, name='home'),
     #Cadastros
     

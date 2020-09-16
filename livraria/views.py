@@ -4,6 +4,16 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from datetime import date
 from django.utils import timezone
+from django.views.generic.edit import CreateView
+from .models import CustomUsuario
+from django.urls import reverse_lazy
+from .forms import CustomUsuarioCreationForm
+
+
+class SignUpView(CreateView):
+    form_class = CustomUsuarioCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'register_user.html'
 
 
 '''

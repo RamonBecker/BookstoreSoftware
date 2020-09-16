@@ -22,9 +22,9 @@
 							E-mail
 						</span>
 					</div>
-					<div class="wrap-input100 validate-input" data-validate = "Username is required">
+					<div class="wrap-input100 validate-input">
 						<input class="input100" type="email" id="username" name="username" placeholder="Digite seu e-mail" >
-						<span class="focus-input100"></span>
+						<span class="focus"></span>
 					</div>
 					
 					<div class="p-t-13 p-b-9">
@@ -37,9 +37,9 @@
 						</a>
 					</div>
 					<div class="wrap-input100 validate-input" 
-					data-validate = "Password is required">
+					>
 						<input class="input100" id="password" type="password" name="password" placeholder="Digite sua senha" >
-						<span class="focus-input100"></span>
+						
 					</div>
 
 					<div class="container-login100-form-btn m-t-17">
@@ -67,7 +67,7 @@
 						<span class="login100-form-register-now">
 
 							Não tem cadastro ?
-							<a href="#" class="p-t-13 p-b-9">
+							<a href="{% url 'livraria:registeruser' %}" class="p-t-13 p-b-9">
 								Entre aqui para criar uma conta
 							</a>
 						</span>

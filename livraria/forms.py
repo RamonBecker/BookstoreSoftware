@@ -2,7 +2,7 @@
 #from livraria.models import Livro, Editora, Endereco, Autor, EmprestimoLivro
 #from django.utils import timezone
 #from datetime import date
-'''
+
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from .models import CustomUsuario
 
@@ -10,13 +10,15 @@ from .models import CustomUsuario
 class CustomUsuarioCreationForm(UserCreationForm):
     class Meta:
         model = CustomUsuario
-        fields = ('first_name', 'last_name', 'fone')
-        labels = {'username': 'Username/E-mail'}
+        fields = ('first_name', 'last_name', 'fone', 'email')
+        #labels = {'username': 'Username/E-mail'}
+        
 
     def save(self, commit=True):
         user = super().save(commit=False)
         user.set_password(self.cleaned_data['password1'])
-        user.email = self.cleaned_data['username']
+        user.username = self.cleaned_data['email']
+        
 
         if commit:
             user.save()
@@ -28,10 +30,10 @@ class CustomUsuarioChangeForm(UserChangeForm):
 
     class Meta:
         model = CustomUsuario
-        fields = ('first_name', 'last_name', 'fone')
+        fields = ('first_name', 'last_name', 'fone', 'email')
 
 
-'''
+
 
 
 '''
