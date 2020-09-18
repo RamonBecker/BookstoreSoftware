@@ -14,7 +14,7 @@ from .views import SignUpView
 app_name = 'livraria'
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', TemplateView.as_view(template_name='livraria/home.html'), name='home'),
     path('registrousuario', SignUpView.as_view(), name='registeruser'),
     #path('', livraria_base, name='home'),
     #Cadastros

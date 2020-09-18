@@ -12,11 +12,18 @@
 }
 
 
-.textRegisterUser{
-  font-family: Montserrat-medium;
+.paragrafoRedefinicaoSenha{
+  font-family: Poppins-Regular;
   color: #333333;
   line-height: 1.2;
-  font-size: 18px;
+  font-size: 20px;
+}
+
+.textRegisterUser{
+  font-family: Montserrat-SemiBold;
+  color: #333333;
+  line-height: 1.2;
+  font-size: 30px;
 }
 
 

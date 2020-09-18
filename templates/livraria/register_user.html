@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'livraria/base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
 {% block content %}
@@ -6,9 +6,14 @@
 
 
 
+
 <div class="limiter">
+
     <div class="container-login100">
         <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+        
+            {% include 'livraria/message/message.html' %}
+
             <div class="container-login100-form-btn m-t-17">
 
                 <form class="login100-form validate-form flex-sb flex-w" method="POST" autocomplete="off">
@@ -22,9 +27,6 @@
                         {{form|crispy}}
                        
                         </div>
-				
-                
-                    
                     </div>
                     <button class="login100-form-btn " type="submit">
                         Salvar

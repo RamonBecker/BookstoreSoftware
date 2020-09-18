@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
+{% load sweetify %}
+{% sweetify %}
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -83,18 +85,11 @@
 </body>
   
 
-
-<div>
-<div class="mt-5 pt-1 pb-1 footer bg-dark">
+<div class="mt-5 pt-3 pb-5 footer bg-dark">
   <div class="container">
     <div class="row">
       <div class="col-lg-5 col-xs-12 about-company">
-      
-      
   
-      <!-- 
-      <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
-        -->
           <div class="card-body">
           <h5 class="card-title text-white display-4" style="font-size:30px">Redes Sociais</h5>
           <p class="text-white">Conheça nossos trabalhos através de nossas redes sociais :D </p>
@@ -109,11 +104,11 @@
             
   
         </div>
-      </div>	
+       </div>	
   
       
       
-      <div class="col-lg-3 col-xs-12 links">
+       <div class="col-lg-3 col-xs-12 links">
           <ul class="m-0 p-0">
           </ul>
       </div>
@@ -130,16 +125,17 @@
       </div>
     </div>
   </div>
-  </div>
 </div>
 
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-
-<script type="text/javascript" src="{% static 'js/javascript.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/d3js/5.15.1/d3.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+
+<script src='https://unpkg.com/sweetalert2@7.12.15/dist/sweetalert2.all.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
+
 </html>

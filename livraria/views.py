@@ -4,17 +4,23 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from datetime import date
 from django.utils import timezone
+
+from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import CreateView
 from .models import CustomUsuario
 from django.urls import reverse_lazy
 from .forms import CustomUsuarioCreationForm
+from sweetify.views import SweetifySuccessMixin
 
 
-class SignUpView(CreateView):
+
+class SignUpView(SuccessMessageMixin,CreateView):
     form_class = CustomUsuarioCreationForm
-    success_url = reverse_lazy('login')
-    template_name = 'register_user.html'
-
+    success_url = reverse_lazy('livraria:registeruser')
+    template_name = 'livraria/register_user.html'
+    success_message = 'Registro efetuado com sucesso'
+    #def get_success_message(self, cleaned_data):
+       # return 'Registro efetuado com sucesso'
 
 '''
 
