@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% load static %}
 {% load sweetify %}
-{% sweetify %}
+
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -19,9 +19,10 @@
         <!--Estilos do footer -->
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
     
-    <!--Estilos do Login -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login_util.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login_main.css' %}">
+    <!--Estilos-->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/util_FS_P_M.css' %}">
+    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/util.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
 </head>
 
@@ -31,33 +32,39 @@
 <header>
       <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
     <div class="container">
-      <a class="navbar-brand" href="/">Livraria</a>
+      <a class="navbar-brand fs-30" href="/">Livraria</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class = "collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
 
-          <li class="nav-item active">
-            <a nav-link href="{% url 'blog:post_list' %}">Conheça nosso blog
-            <span class="material-icons">article</span>
+          <li class="nav-item active p-t-5">
+            <a class="fs-15 text-white p-t-6 linkblog"nav-link href="{% url 'blog:post_list' %}">Conheça nosso blog
+            <span class="material-icons p-t-1">article</span>
           </a>
           </li>
-
+          {% if user.is_authenticated %}
              <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">Serviços</a>
+                    <a href="#" class="nav-link dropdown-toggle fs-15 text-white" data-toggle="dropdown">Serviços</a>
                     <div class="dropdown-menu">
 
                     </div>
                 </li>
-            {% if user.is_authenticated %}
-
+           
+                <!-- 
             <li class="nav-item">
                 <div id="nameUser">
-                    <p>Seja bem vindo, {{ user.username }}</p>
+                    <p class="fs-18 text-white p-t-4 p-r-30">Seja bem vindo, {{ user.first_name }} {{user.last_name}}</p>
                 </div>
             </li>
+            -->
+            <li class="nav-item dropdown p-r-30">
+              <a href="#" class="nav-link dropdown-toggle fs-15 text-white " data-toggle="dropdown">Seja bem vindo, {{ user.first_name }} {{user.last_name}}</a>
+              <div class="dropdown-menu">
 
+              </div>
+          </li>
 
 
 
@@ -85,22 +92,22 @@
 </body>
   
 
-<div class="mt-5 pt-3 pb-5 footer bg-dark">
+<div class="mt-5 pt-4 pb-5 footer bg-dark">
   <div class="container">
     <div class="row">
       <div class="col-lg-5 col-xs-12 about-company">
   
           <div class="card-body">
-          <h5 class="card-title text-white display-4" style="font-size:30px">Redes Sociais</h5>
-          <p class="text-white">Conheça nossos trabalhos através de nossas redes sociais :D </p>
+          <h5 class="card-title text-white display-4 fs-30">Redes Sociais</h5>
+          <p class="text-white fs-20">Conheça nossos trabalhos através de nossas redes sociais :D </p>
       
-              <a class="text-light" href="#"><i class="fa fa-facebook-square fa-fw fa-2x"></i></a>
+              <a class="text-light" href="https://pt-br.facebook.com/"><i class="fa fa-facebook-square fa-fw fa-2x"></i></a>
             
-              <a class="text-light" href="#"><i class="fa fa-twitter-square fa-fw fa-2x"></i></a>
+              <a class="text-light" href="https://twitter.com/login?lang=pt"><i class="fa fa-twitter-square fa-fw fa-2x"></i></a>
             
-              <a class="text-light" href="#"><i class="fa fa-instagram fa-fw fa-2x"></i></a>
+              <a class="text-light" href="https://www.instagram.com/?hl=pt-br"><i class="fa fa-instagram fa-fw fa-2x"></i></a>
             
-              <a class="text-light" href="#"><i class="fa fa-linkedin fa-fw fa-2x"></i></a>
+              <a class="text-light" href="https://br.linkedin.com/"><i class="fa fa-linkedin fa-fw fa-2x"></i></a>
             
   
         </div>
@@ -114,14 +121,15 @@
       </div>
       <div class="col-lg-4 col-xs-12 location">
         <h4 class="mt-lg-0 mt-sm-4 ">Local</h4>
-        <p class="text-white p-t-13 p-b-9">00, Lorem ipsum dolor, consectetur adipiscing</p>
-        <p class="mb-0 text-white"><i class="fa fa-phone mr-3"></i>(00) 000-000</p>
-        <p class="text-white"><i class="fa fa-envelope-o mr-3 text-white"></i>info@livraria.com</p>
+        <p class="text-white p-t-13 p-b-9 fs-20">00, Lorem ipsum dolor, consectetur adipiscing</p>
+        <p class="mb-0 text-white fs-20"><i class="fa fa-phone mr-3"></i>(00) 000-000</p>
+        <p class="text-white fs-20"><i class="fa fa-envelope-o mr-3 text-white"></i>info@livraria.com</p>
       </div>
     </div>
-    <div class="row mt-5">
+
+    <div class="row mt-6">
       <div class="col copyright">
-        <p class="text-white"><small class="text-white">&copy; {% now 'Y' %}</small></p>
+        <p class="text-white fs-20"><small class="text-white">&copy; {% now 'Y' %}</small></p>
       </div>
     </div>
   </div>
