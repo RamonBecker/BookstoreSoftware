@@ -55,32 +55,45 @@ class CustomUsuario(AbstractUser):
         return self.email
 
     objects = UsuarioManager()
-'''
+
+
+
+
 class Produto(models.Model):
     nome = models.CharField('Nome', max_length=100)
     preco = models.DecimalField('Preco', max_digits=8, decimal_places=2)
     estoque = models.IntegerField('Estoque', default=0)
     preco_total = models.DecimalField('Preco Total', max_digits=8, decimal_places=2, default=0)
+
     def __str__(self):
         return "'{}-{}-{}'".format(self.nome, self.preco, self.estoque)
 
 
 class Autor(models.Model):
     nome = models.CharField('Nome do autor', max_length=200)
-    data_nascimento = models.DateField('Data de nascimento do autor', blank=True)
+    data_nascimento = models.DateField('Data de nascimento do autor')
+
+    class Meta:
+        verbose_name = 'Autor'
+        verbose_name_plural = 'Autores'
 
     def __str__(self):
         return "'{}'-'{}'".format(self.nome,self.data_nascimento)
 
 
 class Livro(Produto):
-    autor = models.ForeignKey('Autor', on_delete=models.CASCADE, related_name='autor')
+
+    autor = models.OneToOneField('Autor', on_delete=models.CASCADE, related_name='autor')
+    editora = models.OneToOneField('Editora', on_delete=models.CASCADE, related_name='editora')
     edicao = models.IntegerField('Edicao', default=1)
-    ano = models.DateField('Ano', blank=True)
+    ano = models.DateField('Ano')
     num_paginas = models.IntegerField('Numero de paginas', default=0)
     descricao = models.CharField('Descricao', max_length=300)
-    editora = models.ForeignKey('Editora', on_delete=models.CASCADE, related_name='editora')
-    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE, related_name='categoria',default='')
+    categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE, related_name='categoria')
+
+    class Meta:
+        verbose_name = 'Livro'
+        verbose_name_plural = 'Livros'
 
     def __str__(self):
         return "'{}'-'{}'-'{} - {}'".format(self.autor, self.edicao, self.ano, self.editora.nome)
@@ -88,10 +101,15 @@ class Livro(Produto):
 
 class Editora(models.Model):
     nome = models.CharField('Nome', max_length=100)
-    endereco = models.ForeignKey('Endereco', on_delete=models.CASCADE, related_name='endereco')
+    endereco = models.OneToOneField('Endereco', on_delete=models.CASCADE, related_name='endereco')
+
+    class Meta:
+        verbose_name = 'Editora'
+        verbose_name_plural = 'Editoras'
 
     def __self__(self):
         return "'{} - {}'".format(self.nome, self.endereco)
+
 
 class Endereco(models.Model):
     rua = models.CharField('Rua', max_length=200)
@@ -100,23 +118,50 @@ class Endereco(models.Model):
     estado = models.CharField('Estado', max_length=200)
     numero = models.IntegerField('Numero', default=0)
     
+    class Meta:
+        verbose_name = 'Endereco'
+        verbose_name_plural = 'Enderecos'
+
     def __str__(self):
         return "'{}'-'{}'-'{} - {} - {}'".format(self.rua, self.bairro, self.cidade, self.estado,self.numero)
 
+
 class Categoria(models.Model):
-    nome = models.CharField('Nome', max_length=200)
+
+
+    CATEGORIA_CHOICES = (
+        ('Filosofia', 'Filosofia'),
+        ('Religiao','Religiao'),
+        ('Ciencia','Ciencia'),
+        ('Romance','Romance'),
+        ('Historia','Historia'),
+    )
+
+    nome = models.CharField('Nome', max_length=200, choices=CATEGORIA_CHOICES)
+
+    class Meta:
+        verbose_name = 'Categoria'
+        verbose_name_plural = 'Categorias'
+
+    def __str__(self):
+        return "'{}'".format(self.nome)
+
 
 
 class EmprestimoLivro(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     livro = models.ForeignKey('Livro',on_delete=models.CASCADE, related_name='livro')
-    data_inicial = models.DateTimeField(blank=True)
-    data_devolucao = models.DateField(blank=True)
+    data_inicial = models.DateTimeField('Data inicial', auto_now_add=True)
+    data_devolucao = models.DateField('Data de devolução')
     preco = models.DecimalField('Preco', max_digits=8, decimal_places=2)
     ativo = models.BooleanField(default=False)
     quantidade = models.IntegerField('Quantidade', default=0)
 
+
+    class Meta:
+        verbose_name = 'Emprestimo'
+        verbose_name_plural = 'Emprestimos'
+
     def __str__(self):
         return "'{}'-{}-{}-{}-{}-{}-{}".format(self.user, self.livro, self.data_inicial, self.data_devolucao, self.preco, self.ativo, self.quantidade)
 
-'''
