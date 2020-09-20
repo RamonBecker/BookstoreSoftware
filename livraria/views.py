@@ -9,14 +9,6 @@ from django.shortcuts import render
 from django.contrib import messages
 
 
-
-class CategoriaIndexView(ListView):
-    models = Categoria
-    template_name = 'base.html'
-    queryset = Categoria.objects.all()
-    context_object_name = 'categorias'
-
-
 class AutorIndexView(ListView):
     models = Autor
     template_name = 'base.html'
@@ -42,7 +34,57 @@ class CreateLivroView(SuccessMessageMixin,CreateView):
     form_class = LivroCreationForm
     success_url = reverse_lazy('livraria:cadastrarlivro')
     template_name = 'livraria/forms/add_livro.html'
-    success_message = 'Cadastro realizado com sucesso!'
+
+    def get(self, request, *args, **kwargs):
+        autores = Autor.objects.all()
+        editoras = Editora.objects.all()
+        formLivro = super(CreateLivroView, self).get_form()
+        context = {'formLivro': formLivro,
+                   'autores': autores,
+                   'editoras': editoras}
+        return render(request, 'livraria/forms/add_livro.html',context)
+
+    def post(self, request, *args, **kwargs):
+        formLivro = self.get_form()
+        autores = Autor.objects.all()
+        editoras = Editora.objects.all()
+
+        print(formLivro.is_valid())
+        print(formLivro.cleaned_data)
+
+        if formLivro.is_valid():
+            nome = formLivro.cleaned_data['nome']
+            preco = formLivro.cleaned_data['preco']
+            estoque = formLivro.cleaned_data['estoque'] 
+            edicao = formLivro.cleaned_data['edicao']
+            ano = formLivro.cleaned_data['ano']
+            num_paginas = formLivro.cleaned_data['num_paginas']
+            descricao = formLivro.cleaned_data['descricao']
+
+            editora = formLivro.cleaned_data['editora']
+            autor = formLivro.cleaned_data['autor'] 
+            categoria = formLivro.cleaned_data['categoria']
+
+            aux_editora, created = Editora.objects.get_or_create(id=editora.id)
+            aux_autor, created = Autor.objects.get_or_create(id=autor.id)
+            aux_categoria, created = Categoria.objects.get_or_create(nome=categoria)
+
+            livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria)
+
+            messages.success(request,'Cadastro realizado com sucesso!')
+            livro.save()
+            
+        formLivro = LivroCreationForm()
+
+
+        context = {'formLivro': formLivro,
+                   'editoras': editoras,
+                   'autores': autores
+                  }
+
+        return render(request, 'livraria/forms/add_livro.html' , context)
+
+
     
 
 class CreateEditoraView(CreateView):
@@ -100,6 +142,7 @@ class CreateAutorView(SuccessMessageMixin, CreateView):
             autor.save()
 
         formAutor = AutorCreationForm()
+        
 
         return render(request, 'livraria/forms/add_autor.html' , {'formAutor': formAutor})
 

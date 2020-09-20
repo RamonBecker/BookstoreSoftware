@@ -83,8 +83,8 @@ class Autor(models.Model):
 
 class Livro(Produto):
 
-    autor = models.OneToOneField('Autor', on_delete=models.CASCADE, related_name='autor')
-    editora = models.OneToOneField('Editora', on_delete=models.CASCADE, related_name='editora')
+    autor = models.ForeignKey('Autor', on_delete=models.CASCADE, related_name='autor')
+    editora = models.ForeignKey('Editora', on_delete=models.CASCADE, related_name='editora')
     edicao = models.IntegerField('Edicao', default=1)
     ano = models.DateField('Ano')
     num_paginas = models.IntegerField('Numero de paginas', default=0)
@@ -96,7 +96,7 @@ class Livro(Produto):
         verbose_name_plural = 'Livros'
 
     def __str__(self):
-        return "'{}'-'{}'-'{} - {}'".format(self.autor, self.edicao, self.ano, self.editora.nome)
+        return "'{}'-'{}'-'{} - {}'".format(self.autor, self.edicao, self.ano, self.editora)
 
 
 class Editora(models.Model):
@@ -107,8 +107,8 @@ class Editora(models.Model):
         verbose_name = 'Editora'
         verbose_name_plural = 'Editoras'
 
-    def __self__(self):
-        return "'{} - {}'".format(self.nome, self.endereco)
+    def __str__(self):
+        return "Nome:'{}'- Endereço:'{}'".format(self.nome, self.endereco)
 
 
 class Endereco(models.Model):
@@ -123,7 +123,7 @@ class Endereco(models.Model):
         verbose_name_plural = 'Enderecos'
 
     def __str__(self):
-        return "'{}'-'{}'-'{} - {} - {}'".format(self.rua, self.bairro, self.cidade, self.estado,self.numero)
+        return "'{}'-'{}'-'{}' - '{}' - '{}'".format(self.rua, self.bairro, self.cidade, self.estado,self.numero)
 
 
 class Categoria(models.Model):

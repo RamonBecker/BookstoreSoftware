@@ -12,6 +12,17 @@ class DateInput(forms.DateInput):
     input_type = 'date'
 
 
+CATEGORIA_CHOICES = (
+    ('Filosofia', 'Filosofia'),
+    ('Religiao','Religiao'),
+    ('Ciencia','Ciencia'),
+    ('Romance','Romance'),
+    ('Historia','Historia'),
+    ('Terror', 'Terror'),
+    ('Suspense', 'Suspense'),
+    )
+
+
 class CustomUsuarioCreationForm(UserCreationForm):
     class Meta:
         model = CustomUsuario
@@ -39,23 +50,14 @@ class CustomUsuarioChangeForm(UserChangeForm):
 
 
 class LivroCreationForm(forms.ModelForm):
-    
+
+    categoria = forms.ChoiceField(choices=CATEGORIA_CHOICES, label='Categoria')
+    ano = forms.DateField(widget=DateInput, label='Ano')
+    descricao = forms.CharField(widget=forms.Textarea())
+
     class Meta:
         model = Livro
-        fields = ('nome', 'preco', 'estoque', 'edicao', 'ano', 'num_paginas', 'descricao', 'categoria', 'autor', 'editora')
-
-    def save(self, commit=True):  
-        livro = super().save(commit=False)
-        print(self.nome)
-        print(self.preco)
-        print(self.quantidade)
-        print(self.edicao)
-        print(self.ano)
-        print(self.num_paginas)
-        print(self.descricao)
-        print(self.categoria)
-        print(self.autor)
-        print(self.editora)
+        fields = ('nome', 'preco', 'estoque', 'edicao', 'num_paginas', 'autor', 'editora')
 
 
 class EditoraCreateForm(forms.ModelForm):
