@@ -48,9 +48,12 @@
              <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle fs-15 text-white" data-toggle="dropdown">Serviços</a>
                     <div class="dropdown-menu">
-                      <a href="{% url 'livraria:cadastrarlivro' %}" class="dropdown-item">Cadastrar Produto</a>
-                      <a href="#" class="dropdown-item">Cadastrar Editora</a>
                       <a href="#" class="dropdown-item">Meus Livros e empréstimos</a>
+                      <div class="dropdown-header">Cadastros</div>
+                      <a href="{% url 'livraria:cadastrarlivro' %}" class="dropdown-item">Livro</a>
+                      <a href="{% url 'livraria:cadastrareditora' %}" class="dropdown-item">Editora</a>
+                      <a href="#" class="dropdown-item">Autor</a>
+                      <a href="#" class="dropdown-item">Categoria</a>
                     </div>
                 </li>
            
@@ -73,8 +76,8 @@
             </li>
 
             {% else %}
-             <a href="{% url 'login' %}" class="top-menu"><span class="material-icons">lock</span></a>
-            {% endif %}
+             <a href="{% url 'login' %}" class="top-menu"><span class="material-icons p-t-6 ">lock</span></a>
+            {% endif %} 
         </ul>
       </div>
     </div>
@@ -138,7 +141,9 @@
 <script src="https://ajax.googleapis.com/ajax/libs/d3js/5.15.1/d3.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- 
 <script src='https://unpkg.com/sweetalert2@7.12.15/dist/sweetalert2.all.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/promise-polyfill"></script>
-
+-->
 </html>

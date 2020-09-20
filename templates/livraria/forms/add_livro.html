@@ -4,13 +4,18 @@
 {% block content %}
 
 
+
+
+
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
             <div class="container-login100-form-btn m-t-17">
+                {% if  categorias and autores and editoras %}
+
                 <form class="login100-form validate-form flex-sb flex-w" method="POST" autocomplete="off">
                     <span class="login100-form-title p-b-53">
-                      Registro de livro
+                      Cadastro de livro
                     </span>
                     
                     {% csrf_token %}
@@ -21,11 +26,34 @@
                     <button class="login100-form-btn  " type="submit">
                         Salvar
                     </button>
-                    <div class="p-t-10"></div>
-                </form>            
+
+                </form>  
+                <div class="p-t-10"></div>
+                    {% else %}
+          
+                    <span class="login100-form-title p-b-53">
+                        Aviso <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                        <p class="fs-20"> Não há categorias, autores e editoras cadastradas.
+                            Para cadastrar livro, é necessário cadastrar pelo menos uma categoria, uma editora e um autor!</p>
+
+                          <a href="/">
+                            <button class="login100-form-btn  " type="submit">
+                                Voltar
+                            </button>
+                            <div class="p-t-13"></div>
+                        </a>
+                        </span>
+                      
+    
+                    {% endif%}
+           
+                  
             </div>
         </div>
     </div>
   </div>
+
+
+
 
 {% endblock %}

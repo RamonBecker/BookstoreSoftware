@@ -1,10 +1,12 @@
-#from django import forms
+#
 #from livraria.models import Livro, Editora, Endereco, Autor, EmprestimoLivro
 #from django.utils import timezone
 #from datetime import date
 
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUsuario
+from django import forms
+
+from .models import CustomUsuario, Livro, Editora
 
 
 class CustomUsuarioCreationForm(UserCreationForm):
@@ -34,18 +36,39 @@ class CustomUsuarioChangeForm(UserChangeForm):
 
 
 
+class LivroCreationForm(forms.ModelForm):
+    
+    class Meta:
+        model = Livro
+        fields = ('nome', 'preco', 'estoque', 'edicao', 'ano', 'num_paginas', 'descricao', 'categoria', 'autor', 'editora')
+
+    def save(self, commit=True):  
+        livro = super().save(commit=False)
+        print(self.nome)
+        print(self.preco)
+        print(self.quantidade)
+        print(self.edicao)
+        print(self.ano)
+        print(self.num_paginas)
+        print(self.descricao)
+        print(self.categoria)
+        print(self.autor)
+        print(self.editora)
+
+
+class EditoraCreateForm(forms.ModelForm):
+    rua = forms.CharField(max_length=100,label='Rua')
+    bairro = forms.CharField(max_length=100,label='Bairro')
+    numero = forms.IntegerField(initial = 0,label='Número')
+    cidade = forms.CharField(max_length=100,label='Cidade')
+    estado = forms.CharField(max_length=100,label='Estado')
+
+    class Meta:
+        model = Editora
+        fields = ('nome',)
 
 
 '''
-
-CATEGORIAS_LIVROS = [
-    ('','Selecione'),
-    ('Filosofia', 'Filosofia'),
-    ('Religiao','Religiao'),
-    ('Ciencia','Ciencia'),
-    ('Romance','Romance'),
-]
-
 class DateInput(forms.DateInput):
     input_type = 'date'
 

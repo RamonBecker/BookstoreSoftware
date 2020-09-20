@@ -1,10 +1,34 @@
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic.edit import CreateView
+from django.views.generic import ListView
 from .models import CustomUsuario
 from django.urls import reverse_lazy
-from .forms import CustomUsuarioCreationForm
-from .models import Livro
+from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateForm
+from .models import Livro, Categoria, Autor, Editora, Endereco
+from django.shortcuts import render
+from django.contrib import messages
 
+
+
+class CategoriaIndexView(ListView):
+    models = Categoria
+    template_name = 'base.html'
+    queryset = Categoria.objects.all()
+    context_object_name = 'categorias'
+
+
+class AutorIndexView(ListView):
+    models = Autor
+    template_name = 'base.html'
+    queryset = Autor.objects.all()
+    context_object_name = 'autores'
+
+
+class EditoraIndexView(ListView):
+    models = Autor
+    template_name = 'base.html'
+    queryset = Editora.objects.all()
+    context_object_name = 'editoras'
 
 
 class SignUpView(SuccessMessageMixin,CreateView):
@@ -17,13 +41,43 @@ class SignUpView(SuccessMessageMixin,CreateView):
 
 
 class CreateLivroView(SuccessMessageMixin,CreateView):
-    model = Livro
-    fields = ['nome', 'preco']
+    form_class = LivroCreationForm
     success_url = reverse_lazy('livraria:cadastrarlivro')
     template_name = 'livraria/forms/add_livro.html'
     success_message = 'Cadastro realizado com sucesso!'
     
 
+class CreateEditoraView(SuccessMessageMixin,CreateView):
+    model = Editora
+    form_class = EditoraCreateForm
+    success_url = reverse_lazy('livraria:cadastrareditora')
+
+    def get(self, request, *args, **kwargs):
+        form = super(CreateEditoraView, self).get_form()
+        context = {'formEditora': form}
+        return render(request, 'livraria/forms/add_editora.html', context)
+
+    def post(self, request, *args, **kwargs):
+        formEditora = self.get_form()
+        print(formEditora.is_valid())
+
+        if formEditora.is_valid():
+
+            rua = formEditora.cleaned_data['rua']
+            bairro = formEditora.cleaned_data['bairro']
+            cidade = formEditora.cleaned_data['cidade']
+            estado = formEditora.cleaned_data['estado']
+            numero = formEditora.cleaned_data['numero']
+            nomeEditora = formEditora.cleaned_data['nome']
+
+            endereco, created = Endereco.objects.get_or_create(rua=rua, bairro=bairro, numero=numero, cidade=cidade, estado=estado)
+            editora, created = Editora.objects.get_or_create(nome=nomeEditora, endereco=endereco)
+            messages.success(request,'Cadastro realizado com sucesso!')
+            editora.save()
+
+        formEditora = EditoraCreateForm()
+
+        return render(request, 'livraria/forms/add_editora.html', {'formEditora': formEditora})
 
 '''
 
