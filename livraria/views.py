@@ -3,7 +3,7 @@ from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from .models import CustomUsuario
 from django.urls import reverse_lazy
-from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateForm
+from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateForm, AutorCreationForm
 from .models import Livro, Categoria, Autor, Editora, Endereco
 from django.shortcuts import render
 from django.contrib import messages
@@ -25,7 +25,7 @@ class AutorIndexView(ListView):
 
 
 class EditoraIndexView(ListView):
-    models = Autor
+    models = Editora
     template_name = 'base.html'
     queryset = Editora.objects.all()
     context_object_name = 'editoras'
@@ -36,8 +36,6 @@ class SignUpView(SuccessMessageMixin,CreateView):
     success_url = reverse_lazy('livraria:registeruser')
     template_name = 'livraria/register_user.html'
     success_message = 'Cadastro efetuado com sucesso!'
-    #def get_success_message(self, cleaned_data):
-       # return 'Registro efetuado com sucesso'
 
 
 class CreateLivroView(SuccessMessageMixin,CreateView):
@@ -47,7 +45,7 @@ class CreateLivroView(SuccessMessageMixin,CreateView):
     success_message = 'Cadastro realizado com sucesso!'
     
 
-class CreateEditoraView(SuccessMessageMixin,CreateView):
+class CreateEditoraView(CreateView):
     model = Editora
     form_class = EditoraCreateForm
     success_url = reverse_lazy('livraria:cadastrareditora')
@@ -59,7 +57,6 @@ class CreateEditoraView(SuccessMessageMixin,CreateView):
 
     def post(self, request, *args, **kwargs):
         formEditora = self.get_form()
-        print(formEditora.is_valid())
 
         if formEditora.is_valid():
 
@@ -78,6 +75,33 @@ class CreateEditoraView(SuccessMessageMixin,CreateView):
         formEditora = EditoraCreateForm()
 
         return render(request, 'livraria/forms/add_editora.html', {'formEditora': formEditora})
+
+
+class CreateAutorView(SuccessMessageMixin, CreateView):
+    form_class = AutorCreationForm
+    template_name = 'livraria/forms/add_autor.html'
+    success_url = reverse_lazy('livraria:cadastrarautor')
+
+    def get(self, request, *args, **kwargs):
+        formAutor = super(CreateAutorView, self).get_form()
+        context = {'formAutor': formAutor}
+        return render(request, 'livraria/forms/add_autor.html',context)
+
+    def post(self, request, *args, **kwargs):
+        formAutor = self.get_form()
+
+        if formAutor.is_valid():
+
+            nome = formAutor.cleaned_data['nome']
+            data_nascimento = formAutor.cleaned_data['data_nascimento']
+
+            autor, created = Autor.objects.get_or_create(nome=nome, data_nascimento=data_nascimento)
+            messages.success(request,'Cadastro realizado com sucesso!')
+            autor.save()
+
+        formAutor = AutorCreationForm()
+
+        return render(request, 'livraria/forms/add_autor.html' , {'formAutor': formAutor})
 
 '''
 

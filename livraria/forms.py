@@ -6,15 +6,17 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
 
-from .models import CustomUsuario, Livro, Editora
+from .models import CustomUsuario, Livro, Editora, Categoria, Autor
+
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 
 class CustomUsuarioCreationForm(UserCreationForm):
     class Meta:
         model = CustomUsuario
         fields = ('first_name', 'last_name', 'fone', 'email')
-        #labels = {'username': 'Username/E-mail'}
-        
+
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -68,9 +70,18 @@ class EditoraCreateForm(forms.ModelForm):
         fields = ('nome',)
 
 
+class AutorCreationForm(forms.ModelForm):
+    data_nascimento = forms.DateField(widget=DateInput, label='Data de nascimento')
+
+    class Meta:
+        model = Autor
+        fields = ('nome',)
+
+
+
+
+
 '''
-class DateInput(forms.DateInput):
-    input_type = 'date'
 
 class CheckboxInput(forms.CheckboxInput):
     input_type = 'checkbox'

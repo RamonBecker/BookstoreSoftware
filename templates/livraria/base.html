@@ -49,11 +49,14 @@
                     <a href="#" class="nav-link dropdown-toggle fs-15 text-white" data-toggle="dropdown">Serviços</a>
                     <div class="dropdown-menu">
                       <a href="#" class="dropdown-item">Meus Livros e empréstimos</a>
+
                       <div class="dropdown-header">Cadastros</div>
                       <a href="{% url 'livraria:cadastrarlivro' %}" class="dropdown-item">Livro</a>
+
                       <a href="{% url 'livraria:cadastrareditora' %}" class="dropdown-item">Editora</a>
-                      <a href="#" class="dropdown-item">Autor</a>
-                      <a href="#" class="dropdown-item">Categoria</a>
+
+                      <a href="{% url 'livraria:cadastrarautor' %}" class="dropdown-item">Autor</a>
+ 
                     </div>
                 </li>
            
