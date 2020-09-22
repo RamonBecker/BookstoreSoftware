@@ -16,6 +16,11 @@ from django.shortcuts import render, reverse, redirect
 from django.contrib import messages
 from django.utils import timezone
 
+
+verificacao_campo_data_devolucao = None
+verificacao_campo_quantidade = None
+aux_instance_form = None
+
 class IndexView(ListView):
     models = Livro
     template_name = 'livraria/home.html'
@@ -51,8 +56,6 @@ class CreateLivroView(LoginRequiredMixin, SuccessMessageMixin,CreateView):
         autores = Autor.objects.all()
         editoras = Editora.objects.all()
 
-        print(formLivro.is_valid())
-        print(formLivro.cleaned_data)
 
         if formLivro.is_valid():
             nome = formLivro.cleaned_data['nome']
@@ -70,8 +73,10 @@ class CreateLivroView(LoginRequiredMixin, SuccessMessageMixin,CreateView):
             aux_editora, created = Editora.objects.get_or_create(id=editora.id)
             aux_autor, created = Autor.objects.get_or_create(id=autor.id)
             aux_categoria, created = Categoria.objects.get_or_create(nome=categoria)
-
-            livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria)
+           
+            preco_total = preco * estoque
+            
+            livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria, preco_total=preco_total)
 
             messages.success(request,'Cadastro realizado com sucesso!')
             livro.save()
@@ -170,15 +175,22 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
     def post(self, request, *args, **kwargs):
 
         livro = Livro.objects.get(pk=self.kwargs['pk'])
-        formEmprestimo = self.get_form()
-
-        print(str(timezone.now))
+        global verificacao_campo_data_devolucao
+        global verificacao_campo_quantidade
+        global aux_instance_form
+        if verificacao_campo_data_devolucao == None and verificacao_campo_quantidade == None: 
+            formEmprestimo = self.get_form()
+            aux_instance_form = formEmprestimo
+        else:
+            formEmprestimo = aux_instance_form
+      
         if formEmprestimo.is_valid():
             quantidade = formEmprestimo.cleaned_data['quantidade']
             data_inicial = formEmprestimo.cleaned_data['data_inicial']
             data_devolucao = formEmprestimo.cleaned_data['data_devolucao']
             preco_total = formEmprestimo.cleaned_data['preco']
             diferenca_data = data_devolucao - data_inicial
+
             
             if quantidade == 0:
                 
@@ -196,31 +208,39 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                 formEmprestimo.fields['preco'].initial = calculo_emprestimo
 
 
-                verificacao_campo_data_devolucao =  formEmprestimo.fields['data_devolucao'].widget.attrs['disabled']
-                print('Data devolucao:', verificacao_campo_data_devolucao)
 
-                verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']
                 livro.estoque = livro.estoque - quantidade
-
-                print('Verificacao data devolucao:', verificacao_campo_data_devolucao)
-                print('Verificacao quantidade:', verificacao_campo_quantidade)
-
-                if verificacao_campo_quantidade and verificacao_campo_data_devolucao:
-                    emprestimo, created = EmprestimoLivro.objects.get_or_create(livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
-                    emprestimo.save()
-                    livro.estoque = livro.estoque - quantidade
-                    livro.save()
+                
+                if not verificacao_campo_quantidade == None and  not verificacao_campo_data_devolucao == None:
                     
+                    if verificacao_campo_quantidade and verificacao_campo_data_devolucao:
+                        emprestimo, created = EmprestimoLivro.objects.get_or_create(user=request.user,livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
+                       
+                        livro.estoque = livro.estoque - quantidade
+                        livro.preco_total = livro.preco * livro.estoque
 
+                        livro.save()
+                        emprestimo.save()
+                        messages.success(request, 'Empréstimo realizado com sucesso!')
                 else:
                     formEmprestimo.fields['data_devolucao'].widget.attrs['disabled'] = True
                     formEmprestimo.fields['quantidade'].widget.attrs['disabled'] = True
 
-            
-        context = {'formEmprestimo': formEmprestimo,
-                   'livro': livro
-            }
+                    verificacao_campo_data_devolucao =  formEmprestimo.fields['data_devolucao'].widget.attrs['disabled']
+                    print('Data devolucao:', verificacao_campo_data_devolucao)
 
+                    verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']
+                    
+                    
+                    
+
+
+                   
+
+        context = {'formEmprestimo': formEmprestimo,
+                           'livro': livro
+                    }
+                  
 
         #if formEmprestimo.is_valid():
             #request.session['temp_data'] = livro
@@ -229,7 +249,7 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
             #return render(request, 'livraria/forms/emprestimo_confirm.html', context)
             #return redirect('livraria:confirmaremprestimo')
 
-        return render(request, 'livraria/forms/emprestimo_livro.html' , context)
+        return render(request, 'livraria/forms/emprestimo_livro.html', context)
 
 
 
