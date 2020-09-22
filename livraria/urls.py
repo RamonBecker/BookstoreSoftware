@@ -9,24 +9,22 @@ from django.contrib import admin
 
 #from .views import livraria_realizar_emprestimo, livraria_devolver_livro
 from django.views.generic.base import TemplateView
-from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView
+from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro
 
 app_name = 'livraria'
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name='livraria/home.html'), name='home'),
-
+    #path('', TemplateView.as_view(template_name='livraria/home.html'), name='home'),
+    path('', IndexView.as_view(), name='home'),
     #Cadastros
     path('registrousuario', SignUpView.as_view(), name='registeruser'),
     path('cadastrolivro', CreateLivroView.as_view(),name='cadastrarlivro'),
     path('cadastroeditora', CreateEditoraView.as_view(), name='cadastrareditora'),
-    path('cadastroautor', CreateAutorView.as_view(), name='cadastrarautor')
-    #path('', livraria_base, name='home'),
-    #Cadastros
-    
-   #path('/livraria_cadastrar_produto/', livraria_cadastrar_produto, name='livrariacadastrarproduto'),
+    path('cadastroautor', CreateAutorView.as_view(), name='cadastrarautor'),
+    #Emprestimo
+    path('<int:pk>/emprestimolivro/', CreateEmprestimoLivro.as_view(), name='emprestarlivro'),
 
-    #path('/livraria_cadastrar_editora/', livraria_cadastrar_editora, name='livrariacadastrareditora'),
+
 
     #Exibição de livros cadastrados
     #path('/livraria_exibir_livros/', livraria_exibir_livros,name='livrariaexibirlivros'),

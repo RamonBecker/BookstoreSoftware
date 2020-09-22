@@ -1,5 +1,7 @@
 import os
 from .local_settings import *
+from django.contrib.messages import constants as messages
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -114,13 +116,20 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-
+TIME_INPUT_FORMATS = ('%d/%m/%Y', )
+DATE_INPUT_FORMATS = ['%d-%m-%Y']
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 AUTH_USER_MODEL = 'livraria.CustomUsuario'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = 'login'
-SWEETIFY_SWEETALERT_LIBRARY  =  'sweetalert2'
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')

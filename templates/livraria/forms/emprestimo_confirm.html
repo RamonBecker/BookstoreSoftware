@@ -8,16 +8,12 @@
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
-
+            
             {% include 'livraria/message/message.html' %}
             <div class="container-login100-form-btn m-t-17">
                 <form class="login100-form validate-form flex-sb flex-w" method="POST" autocomplete="off">
                     <span class="login100-form-title p-b-53">
-                      Empréstimo de livro
-
-                      Aviso <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
-                      <p class="fs-20"> Para realizar o empréstimo, você precisa salvar duas vezes, para ser calculado o valor a pagar</p>
-
+                      Confirmação de empréstimo
                     </span>
                     {% csrf_token %}
                     <div class="textRegisterForm">
@@ -25,7 +21,6 @@
                             <div class="card-header bg-primary mb-3 text-white">
                               <div class="text-center ">
                                     Livro
-                                    
                                 </div>
                             </div>
                             <div class="text-center">
@@ -34,27 +29,21 @@
                             </div>
                                 <ul class="list-group">
                                     <div class="textRegisterForm fs-14">
-                                        <li class="list-group-item  border border-dark"  id="textoCard">Categoria: {{livro.categoria.nome}}</li>
-                                        <li class="list-group-item  border border-dark"  id="textoCard">Edição: {{livro.edicao}}</li>
-                                        <li class="list-group-item  border border-dark"  id="textoCard">Preço: {{livro.preco}}</li>
-                                        <li class="list-group-item  border border-dark"  id="textoCard">Quantidade: {{livro.estoque}}</li>
+                                        <li class="list-group-item  border border-dark"  id="textoCard">Preço: {{livro.preco}} </li>
+                                        <li class="list-group-item  border border-dark"  id="textoCard">Quantidade: {{livro.estoque}} </li>
                                     </div>
                                 </ul>
-                            </div>
-                          </div>
-                          {{formEmprestimo|crispy}}
+                            
+                        </div>                      
                     </div>
-
-                  <div>
+                    {{formEmprestimo|crispy}}
+                    <div class="form-group">
+                        <label for="lname">Preço total</label>
+                        <input class="form-control" type="text" value="{{livro.preco}}" disabled=true>
+                    </div>
                     <button class="login100-form-btn" type="submit">
                         Salvar
                     </button>
-
-                    <a class="login100-form-btn btn-warning" href="/">
-                        Cancelar
-               
-                    </a>
-                </div>
                     <div class="p-t-10"></div>
                 </form>  
             </div>

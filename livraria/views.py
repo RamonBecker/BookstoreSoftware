@@ -1,26 +1,26 @@
 from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
+
 from .models import CustomUsuario
 from django.urls import reverse_lazy
-from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateForm, AutorCreationForm
-from .models import Livro, Categoria, Autor, Editora, Endereco
-from django.shortcuts import render
+
+from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateForm, AutorCreationForm, EmprestimoLivroCreationForm
+
+from .models import Livro, Categoria, Autor, Editora, Endereco, EmprestimoLivro
+
+from django.shortcuts import render, reverse, redirect
 from django.contrib import messages
+from django.utils import timezone
 
-
-class AutorIndexView(ListView):
-    models = Autor
-    template_name = 'base.html'
-    queryset = Autor.objects.all()
-    context_object_name = 'autores'
-
-
-class EditoraIndexView(ListView):
-    models = Editora
-    template_name = 'base.html'
-    queryset = Editora.objects.all()
-    context_object_name = 'editoras'
+class IndexView(ListView):
+    models = Livro
+    template_name = 'livraria/home.html'
+    queryset = Livro.objects.all()
+    context_object_name = 'livros'
 
 
 class SignUpView(SuccessMessageMixin,CreateView):
@@ -30,7 +30,9 @@ class SignUpView(SuccessMessageMixin,CreateView):
     success_message = 'Cadastro efetuado com sucesso!'
 
 
-class CreateLivroView(SuccessMessageMixin,CreateView):
+class CreateLivroView(LoginRequiredMixin, SuccessMessageMixin,CreateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
     form_class = LivroCreationForm
     success_url = reverse_lazy('livraria:cadastrarlivro')
     template_name = 'livraria/forms/add_livro.html'
@@ -74,7 +76,7 @@ class CreateLivroView(SuccessMessageMixin,CreateView):
             messages.success(request,'Cadastro realizado com sucesso!')
             livro.save()
             
-        formLivro = LivroCreationForm()
+            formLivro = LivroCreationForm()
 
 
         context = {'formLivro': formLivro,
@@ -85,9 +87,9 @@ class CreateLivroView(SuccessMessageMixin,CreateView):
         return render(request, 'livraria/forms/add_livro.html' , context)
 
 
-    
-
-class CreateEditoraView(CreateView):
+class CreateEditoraView(LoginRequiredMixin, CreateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
     model = Editora
     form_class = EditoraCreateForm
     success_url = reverse_lazy('livraria:cadastrareditora')
@@ -119,7 +121,9 @@ class CreateEditoraView(CreateView):
         return render(request, 'livraria/forms/add_editora.html', {'formEditora': formEditora})
 
 
-class CreateAutorView(SuccessMessageMixin, CreateView):
+class CreateAutorView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
     form_class = AutorCreationForm
     template_name = 'livraria/forms/add_autor.html'
     success_url = reverse_lazy('livraria:cadastrarautor')
@@ -146,6 +150,90 @@ class CreateAutorView(SuccessMessageMixin, CreateView):
 
         return render(request, 'livraria/forms/add_autor.html' , {'formAutor': formAutor})
 
+
+class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
+    form_class = EmprestimoLivroCreationForm
+    template_name = 'livraria/forms/emprestimo_livro.html'
+    #success_url = reverse_lazy('livraria:cadastrarautor')
+
+    def get(self, request, *args, **kwargs):
+        livro = Livro.objects.get(pk=self.kwargs['pk'])
+        formEmprestimo = super(CreateEmprestimoLivro, self).get_form()
+
+        context = {'formEmprestimo': formEmprestimo,
+                   'livro': livro}
+        
+        return render(request, 'livraria/forms/emprestimo_livro.html',context)
+
+    def post(self, request, *args, **kwargs):
+
+        livro = Livro.objects.get(pk=self.kwargs['pk'])
+        formEmprestimo = self.get_form()
+
+        print(str(timezone.now))
+        if formEmprestimo.is_valid():
+            quantidade = formEmprestimo.cleaned_data['quantidade']
+            data_inicial = formEmprestimo.cleaned_data['data_inicial']
+            data_devolucao = formEmprestimo.cleaned_data['data_devolucao']
+            preco_total = formEmprestimo.cleaned_data['preco']
+            diferenca_data = data_devolucao - data_inicial
+            
+            if quantidade == 0:
+                
+                messages.error(request,'A quantidade não pode ser zero')
+
+            elif quantidade > livro.estoque:
+                messages.error(request,'A quantidade a ser emprestada, não pode ser maior que o estoque do livro')
+            
+            elif diferenca_data.days < 0:
+                messages.error(request,'A data de devolução, não pode ser menor que a data inicio')
+            
+            else:
+                calculo_emprestimo = livro.preco * quantidade
+                print('Calculo emprestimo:', calculo_emprestimo)
+                formEmprestimo.fields['preco'].initial = calculo_emprestimo
+
+
+                verificacao_campo_data_devolucao =  formEmprestimo.fields['data_devolucao'].widget.attrs['disabled']
+                print('Data devolucao:', verificacao_campo_data_devolucao)
+
+                verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']
+                livro.estoque = livro.estoque - quantidade
+
+                print('Verificacao data devolucao:', verificacao_campo_data_devolucao)
+                print('Verificacao quantidade:', verificacao_campo_quantidade)
+
+                if verificacao_campo_quantidade and verificacao_campo_data_devolucao:
+                    emprestimo, created = EmprestimoLivro.objects.get_or_create(livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
+                    emprestimo.save()
+                    livro.estoque = livro.estoque - quantidade
+                    livro.save()
+                    
+
+                else:
+                    formEmprestimo.fields['data_devolucao'].widget.attrs['disabled'] = True
+                    formEmprestimo.fields['quantidade'].widget.attrs['disabled'] = True
+
+            
+        context = {'formEmprestimo': formEmprestimo,
+                   'livro': livro
+            }
+
+
+        #if formEmprestimo.is_valid():
+            #request.session['temp_data'] = livro
+   
+            
+            #return render(request, 'livraria/forms/emprestimo_confirm.html', context)
+            #return redirect('livraria:confirmaremprestimo')
+
+        return render(request, 'livraria/forms/emprestimo_livro.html' , context)
+
+
+
+
 '''
 
 from .forms import LivroForm, EditoraForm, EnderecoForm, AutorForm
@@ -158,109 +246,8 @@ from decimal import Decimal
 val_block = True
 emprestimo_save = None
 
-@login_required
-def livraria_base(request):
-
-    context = {
-        'livros':Livro.objects.all(),
-    }
-
-    return render(request, 'home.html', context)
-
-
 # Funções para realizar cadastros
-@login_required
-def livraria_cadastrar_produto(request):
 
-    form_Livro = LivroForm(request.POST or None)
-    form_Autor = AutorForm(request.POST or None)
-    
-    invalid_Form = False
-
-    
-    if str(request.method) == 'POST':
-        if form_Livro.is_valid() and form_Autor.is_valid():
-
-            #Pegando dados do formulário de Livro
-            nomeLivro = form_Livro.cleaned_data['nome']
-            print(nomeLivro)
-            preco = form_Livro.cleaned_data['preco']
-            estoque = form_Livro.cleaned_data['estoque']
-            edicao = form_Livro.cleaned_data['edicao']
-            nome_categoria = form_Livro.cleaned_data['categorias']
-            num_paginas = form_Livro.cleaned_data['num_paginas']
-            descricao = form_Livro.cleaned_data['descricao']
-            anoLivro = form_Livro.cleaned_data['ano']
-            
-                #Buscando editora selecionada
-
-       
-
-            idEditora = form_Livro.cleaned_data['editora']
-            editora = Editora.objects.get(id=idEditora)
-
-            #Pegando dados do formulario do autor
-            nomeAutor = form_Autor.cleaned_data['nomeAutor']
-            data_nascimento = form_Autor.cleaned_data['ano']
-                
-            #Pegando categoria do bd, se não encontrar cria uma nova categoria
-
-            categoria,created =  Categoria.objects.get_or_create(nome=nome_categoria)              
-
-            #Pegando autor do bd, se não encontrar cria um autor
-            autor,created = Autor.objects.get_or_create(nome=nomeAutor, data_nascimento=data_nascimento)
-
-            #Pega o livro do bd, se não encontrar cria um livro novo
-            livro, created = Livro.objects.get_or_create(nome=nomeLivro,preco=preco,estoque=estoque,edicao=edicao,num_paginas=num_paginas,descricao=descricao, ano=anoLivro, autor=autor,editora=editora, categoria=categoria)
-            livro.preco_total = estoque * preco
-            livro.save()
-            messages.success(request,'Livro cadastrado com sucesso !')
-            form_Livro = LivroForm()
-            form_Autor = AutorForm()
-
-    messages.warning(request,'Atenção, voce precisa cadastrar pelo menos uma editora para cadastrar o livro')
-
-    context = {
-        'formLivro': form_Livro,
-        'formAutor': form_Autor
-    }
-    
-
-    return render(request, 'forms/add_livro.html', context)
-
-@login_required
-def livraria_cadastrar_editora(request):
-
-    aux_Editora_form = EditoraForm(request.POST or None)
-    aux_Endereco_form = EnderecoForm(request.POST or None)
-
-    invalid_Form = False
-
-    if str(request.method) == 'POST':
-        if aux_Editora_form.is_valid() and aux_Endereco_form.is_valid():
-            
-            rua = aux_Endereco_form.cleaned_data['rua']
-            bairro = aux_Endereco_form.cleaned_data['bairro']
-            cidade = aux_Endereco_form.cleaned_data['cidade']
-            estado = aux_Endereco_form.cleaned_data['estado']
-            numero = aux_Endereco_form.cleaned_data['numero']
-            nomeEditora = aux_Editora_form.cleaned_data['nome']
-
-            endereco,created = Endereco.objects.get_or_create(rua=rua, bairro=bairro, cidade=cidade, estado=estado, numero=numero)
-            editora, created = Editora.objects.get_or_create(nome=nomeEditora, endereco=endereco)
-            editora.save()
-            messages.success(request,'Editora cadastrada com sucesso !')
-    
-  
-    aux_Editora_form = EditoraForm()
-    aux_Endereco_form = EnderecoForm()
-
-    context = {
-         'editoraForm':aux_Editora_form,
-         'enderecoForm': aux_Endereco_form,
-    }
-
-    return render(request, 'forms/add_editora.html', context)
 
 
 # Mostrar listagem de livros

@@ -153,7 +153,7 @@ class EmprestimoLivro(models.Model):
     livro = models.ForeignKey('Livro',on_delete=models.CASCADE, related_name='livro')
     data_inicial = models.DateTimeField('Data inicial', auto_now_add=True)
     data_devolucao = models.DateField('Data de devolução')
-    preco = models.DecimalField('Preco', max_digits=8, decimal_places=2)
+    preco = models.DecimalField('Preco total', max_digits=8, decimal_places=2)
     ativo = models.BooleanField(default=False)
     quantidade = models.IntegerField('Quantidade', default=0)
 

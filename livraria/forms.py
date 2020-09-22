@@ -1,15 +1,16 @@
-#
-#from livraria.models import Livro, Editora, Endereco, Autor, EmprestimoLivro
-#from django.utils import timezone
-#from datetime import date
-
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
+from django.utils import timezone
+from datetime import datetime, date
+from django.conf import settings
 
-from .models import CustomUsuario, Livro, Editora, Categoria, Autor
+
+from .models import CustomUsuario, Livro, Editora, Categoria, Autor, EmprestimoLivro
+from mysite.settings import DATE_INPUT_FORMATS, TIME_INPUT_FORMATS
 
 class DateInput(forms.DateInput):
     input_type = 'date'
+    
 
 
 CATEGORIA_CHOICES = (
@@ -48,7 +49,6 @@ class CustomUsuarioChangeForm(UserChangeForm):
         fields = ('first_name', 'last_name', 'fone', 'email')
 
 
-
 class LivroCreationForm(forms.ModelForm):
 
     categoria = forms.ChoiceField(choices=CATEGORIA_CHOICES, label='Categoria')
@@ -80,42 +80,19 @@ class AutorCreationForm(forms.ModelForm):
         fields = ('nome',)
 
 
-
+class EmprestimoLivroCreationForm(forms.ModelForm):
+    data_inicial = forms.DateField(label='Data de início',disabled=True,initial=date.today)
+    data_devolucao = forms.DateField(widget=DateInput, label='Digite a data de devolução')
+    preco = forms.DecimalField(label='Preco a pagar pelo emprestimo',decimal_places=2,disabled=True, initial=0)
+    
+    
+    class Meta:
+        model = EmprestimoLivro
+        fields = ('quantidade', )
 
 
 '''
 
-class CheckboxInput(forms.CheckboxInput):
-    input_type = 'checkbox'
-
-class LivroForm(forms.ModelForm):
-    ano = forms.DateField(widget=DateInput)
-
-    list_editoras = Editora.objects.all().values()
-
-    editora = forms.ChoiceField(choices=[('0','Selecione')]+ [(editora.id, editora.nome) for editora in  Editora.objects.all()])
-    descricao = forms.CharField(widget=forms.Textarea())
-    categorias = forms.ChoiceField(choices=CATEGORIAS_LIVROS)
-
-   # categoria_nao_encontrada = forms.BooleanField(required=False, label='Não encontrei minha categoria')
-    class Meta:
-        model = Livro
-        fields = ('nome', 'preco','estoque', 'edicao','num_paginas')
-
-class EditoraForm(forms.ModelForm):
-    class Meta:
-        model = Editora
-        fields = ('nome',)
-
-class EnderecoForm(forms.ModelForm):
-    class Meta:
-        model = Endereco
-        fields = ('rua','bairro','cidade','estado','numero')
-
-class AutorForm(forms.Form):
-   
-    nomeAutor = forms.CharField(max_length=100,label='Nome do autor')
-    ano = forms.DateField(widget=DateInput,label='Ano de nascimento do autor')
 
 class EmprestimoForm(forms.Form):
     data_inicial = forms.DateField(label='Data de início',disabled=True,initial=timezone.now)
