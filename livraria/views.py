@@ -3,7 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView, View
+
 
 from .models import CustomUsuario
 from django.urls import reverse_lazy
@@ -12,7 +13,7 @@ from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateFo
 
 from .models import Livro, Categoria, Autor, Editora, Endereco, EmprestimoLivro
 
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
 
@@ -20,6 +21,28 @@ from django.utils import timezone
 verificacao_campo_data_devolucao = None
 verificacao_campo_quantidade = None
 aux_instance_form = None
+
+
+class LivrosDetailView(DetailView):
+     model = Livro
+    #queryset = Livro.objects.all()
+     template_name = 'livraria/produto/detalhe_livro.html'
+
+    #def get(self, request, *args, **kwargs):
+     #   livro = get_object_or_404(Livro, pk=kwargs['pk'])
+      #  context = {'livro': livro}
+      #  return render(request, 'livraria/produto/detalhe_livro.html', context)
+   # def get_object(self):
+     #  id_ = self.kwargs.get("id")
+      #  return get_object_or_404(Livro, id=id_)
+
+
+class LivrosListView(ListView):
+    model = Livro
+    template_name = 'livraria/produto/exibir_livros.html'
+    queryset = Livro.objects.all()
+    context_object_name = 'livros'
+
 
 class IndexView(ListView):
     models = Livro
@@ -204,20 +227,20 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
             
             else:
                 calculo_emprestimo = livro.preco * quantidade
-                print('Calculo emprestimo:', calculo_emprestimo)
                 formEmprestimo.fields['preco'].initial = calculo_emprestimo
 
 
 
                 livro.estoque = livro.estoque - quantidade
-                
+
                 if not verificacao_campo_quantidade == None and  not verificacao_campo_data_devolucao == None:
                     
                     if verificacao_campo_quantidade and verificacao_campo_data_devolucao:
                         emprestimo, created = EmprestimoLivro.objects.get_or_create(user=request.user,livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
+                        print('Preco total:',livro.preco_total)
+                        print('Estoque:',livro.estoque)
+                        livro.preco_total = livro.preco_total - calculo_emprestimo
                        
-                        livro.estoque = livro.estoque - quantidade
-                        livro.preco_total = livro.preco * livro.estoque
 
                         livro.save()
                         emprestimo.save()

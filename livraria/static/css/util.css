@@ -133,11 +133,19 @@ button:hover {
 
 
 .wrap-login100 {
-  width: 680px;
+  width: 700px;
   background: #fff;
   border-radius: 10px;
   position: relative;
 }
+
+.tabelalivros {
+  width: 1200px;
+  background: #fff;
+  border-radius: 10px;
+  position: relative;
+}
+
 
 
 /* Form */

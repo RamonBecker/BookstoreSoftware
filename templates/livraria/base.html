@@ -48,8 +48,9 @@
              <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle fs-15 text-white" data-toggle="dropdown">Serviços</a>
                     <div class="dropdown-menu">
-                      <a href="#" class="dropdown-item">Meus Livros e empréstimos</a>
-
+                      <div class="dropdown-header">Listagem</div>
+                      <a href="{% url 'livraria:listarlivros' %}" class="dropdown-item">Livros</a>
+                     
                       <div class="dropdown-header">Cadastros</div>
                       <a href="{% url 'livraria:cadastrarlivro' %}" class="dropdown-item">Livro</a>
 

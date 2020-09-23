@@ -1,34 +1,31 @@
 from django.urls import path, include
+from django.conf.urls import url
+
 from django.contrib.auth import views
 from django.contrib import admin
 
 
-#View
-#from .views import livraria_base, #livraria_cadastrar_produto,livraria_cadastrar_editora
-#from .views import livraria_exibir_livros, livraria_detalhe_livro , livraria_editar_livro, livraria_deletar_livro
-
-#from .views import livraria_realizar_emprestimo, livraria_devolver_livro
 from django.views.generic.base import TemplateView
-from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro
+from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro, LivrosListView, LivrosDetailView
 
 app_name = 'livraria'
 
 urlpatterns = [
-    #path('', TemplateView.as_view(template_name='livraria/home.html'), name='home'),
     path('', IndexView.as_view(), name='home'),
+
     #Cadastros
     path('registrousuario', SignUpView.as_view(), name='registeruser'),
     path('cadastrolivro', CreateLivroView.as_view(),name='cadastrarlivro'),
     path('cadastroeditora', CreateEditoraView.as_view(), name='cadastrareditora'),
     path('cadastroautor', CreateAutorView.as_view(), name='cadastrarautor'),
+
     #Emprestimo
     path('<int:pk>/emprestimolivro/', CreateEmprestimoLivro.as_view(), name='emprestarlivro'),
-
-
-
-    #Exibição de livros cadastrados
-    #path('/livraria_exibir_livros/', livraria_exibir_livros,name='livrariaexibirlivros'),
-
+    #Exibição de livros
+    path('exibirlivros', LivrosListView.as_view(), name='listarlivros'),
+    #re_path(r'(?P<pk>[0-9]+)detalhelivro$', LivrosDetailView.as_view(), name='detaillivro'),
+   # path('<int:pk>/detalhelivro', LivrosDetailView.as_view(), name='detaillivro'),
+    url(r'^detalhelivro/(?P<pk>[0-9]+)/$', LivrosDetailView.as_view(), name='detaillivro')
     #Detalhes do livros
     #path('/livraria_detalhe_livro/<int:pk>', livraria_detalhe_livro,name='livrariadetalhelivro'),
 
@@ -38,8 +35,6 @@ urlpatterns = [
     #Deletar livro
    # path('/livraria_deletarlivro/<int:pk>', livraria_deletar_livro, name='livrariadeletarlivro'),
 
-    #Realizar emprestimo
-    #path('/livraria_emprestimo_livro/<int:pk>', livraria_realizar_emprestimo, name='livrariaemprestimolivro'),
 
     #Devolver Livro
     ##path('/livraria_devolver_livro/<int:pk>',livraria_devolver_livro, name='livrariadevolverlivro')

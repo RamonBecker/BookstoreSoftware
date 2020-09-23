@@ -1,0 +1,57 @@
+{% extends 'livraria/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block content %}
+
+
+<div class="limiter">
+    <div class="container-login100">
+        
+        <div class="tabelalivros p-l-15 p-r-31 p-t-62 p-b-33">
+             
+            <span class="login100-form-title p-b-53">
+                Meus livros
+            </span>
+            
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                      
+                            <th scope="col text-center">Produto</th>
+                            <th scope="col">Preço unitário</th>
+                            <th scope="col">Quantidade em estoque</th>
+                            <th scope="col" id="PrecoTotal">Preço total</th>
+                            <th scope="col">Ação</th>
+                       
+                    </tr>
+                </thead>
+                    
+                <tbody>
+                    {% for livro in livros %}
+                
+                    {% ifchanged %}
+
+                    <tr>
+                        <td scope="row">{{ livro.nome }}</td>
+                        <td scope="row">{{ livro.preco }}</td>
+                        <td scope="row">{{ livro.estoque }}</td>
+                        <td scope="row">{{ livro.preco_total }}</td>
+                        <td id="id"> 
+                            <input type="hidden" >{{livro.id}}</input>
+                        </td>   
+                            <td scope="row">
+                                
+                                <a href="{% url 'livraria:detaillivro' livro.id %}" class="btn btn-primary active" role="button" aria-pressed="true">Exibir detalhes
+                            </td>
+                                {% endifchanged %}
+                            {% endfor %}
+                            </tr> 
+                    </tbody>
+
+            </table>
+        </div>
+        </div>
+</div>
+
+{% endblock %}
