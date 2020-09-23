@@ -1,0 +1,33 @@
+{% extends 'livraria/base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+
+
+<div class="limiter">
+  <div class="container-login100">
+      <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+        {% include 'livraria/message/message.html' %}
+          <div class="container-login100-form-btn m-t-17">
+            <form class="login100-form validate-form flex-sb flex-w" method="POST" autocomplete="off">
+              {% csrf_token %}  
+              <span class="login100-form-title p-b-53">
+              Aviso <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                <p class="fs-20"> Você deseja excluir o livro: {{object.nome}} ?</p>
+              </span>
+                <button class="login100-form-btn btn-danger" type="submit">
+                    Excluir
+                </button>
+                
+                <a href="{% url 'livraria:listarlivros' %}" class="login100-form-btn btn-warning">Voltar</a>
+
+                <div class="p-t-10"></div>
+            </form>
+        </div>
+    </div>
+  </div>
+</div>
+  
+  {% endblock %}

@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView, DetailView, View
+from django.views.generic import ListView, DetailView, DeleteView
 
 
 from .models import CustomUsuario
@@ -22,6 +22,12 @@ verificacao_campo_data_devolucao = None
 verificacao_campo_quantidade = None
 aux_instance_form = None
 
+
+class DeleteLivroView(DeleteView):
+    model = Livro
+    template_name = 'livraria/forms/livro_confirm_delet.html'
+    success_url = reverse_lazy('livraria:listarlivros')
+    success_message = 'Livro deletado com sucesso!'
 
 class LivrosDetailView(DetailView):
      model = Livro

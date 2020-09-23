@@ -3,29 +3,62 @@
 
 {% block content %}
 
-  <div id="containerDetalheProduto">
-    <div id="boxDetalheProduto">
-    <div class="card mb-7 text-white bg-dark">
-       <div class="card-body">
-          <h5 class="card-title">Nome do livro:{{object.nome}}</h5>
-          <p class="card-text">Autor:</p>
-          <p class="card-text">Editora:</p>
-          <p class="card-text">Descrição do livro: </p>
-        </div>
-       
-        <ul class="list-group">
-          <li class="list-group-item" id="textoCard">Categoria: </li>
-          <li class="list-group-item" id="textoCard">Número de páginas:</li>
-          <li class="list-group-item" id="textoCard">Ano de lançamento:</li>
-          <li class="list-group-item" id="textoCard">Preço:</li>
-          <li class="list-group-item" id="textoCard">Quantidade em estoque:</li>
-        </ul>
-        <div class="card-body">
-        <a href="#" class="btn btn-primary ">Voltar</a>
-        <a href="#" class="btn btn-primary ">Editar</a>
-        <a href="#" class="btn btn-primary ">Excluir</a>
+
+
+
+<div class="limiter">
+  <div class="container-login100">
+      <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+          <div class="container-login100-form-btn m-t-17">
+ 
+                  <span class="login100-form-title p-b-53">
+                    Detalhes Livro
+
+                  </span>
+             
+                  <div class="container-detalhe ">
+                    <div class="textRegisterForm">
+                    <div class="card text-white bg-dark">
+                      <div class="card-body">
+                        <div class="text-center">
+                        <h5 class="card-title">Nome do livro: {{object.nome}}</h5>
+                        <p class="card-text textRegisterForm text-white">Descrição do livro: {{object.descricao}}</p>
+                      </div>
+                      </div>
+              
+                      <ul class="list-group">
+                        <div class="text-center">
+                          <li class="list-group-item border border-dark" id="textoCard">Editora: {{object.editora.nome}}</li>
+                        <li class="list-group-item border border-dark" id="textoCard">Autor: {{object.autor.nome}}</li>
+                        <li class="list-group-item border border-dark" id="textoCard">Categoria: {{object.categoria.nome}}</li>
+                        <li class="list-group-item border border-dark" id="textoCard">Número de páginas: {{object.num_paginas}}</li>
+                        <li class="list-group-item border border-dark" id="textoCard">Ano de lançamento: {{object.ano}}</li>
+                        <li class="list-group-item border border-dark" id="textoCard">Preço: {{object.preco}}</li>
+                        <li class="list-group-item border border-dark" id="textoCard">Quantidade em estoque: {{object.estoque}}</li>
+                        </div>
+                      </ul>
+              
+                      <div class="card-body">
+                       <div class="text-center">
+                          <div class="btn-group" role="group">
+                        <a href="#" class="btn btn-primary ">Voltar</a>
+                        <a href="#" class="btn btn-warning">Editar</a>
+                        <a href="{% url 'livraria:deletelivro' livro.id %}" class="btn btn-danger">Excluir</a>
+                       </div>
+                        </div>
+                      </div>
+              
+                    </div>
+                  </div>
+
+                 
+
+                <div>
+              </div>
+                  <div class="p-t-10"></div>
+            </div>
+          </div>
       </div>
-    </div>
   </div>
 </div>
 

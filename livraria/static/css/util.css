@@ -146,6 +146,14 @@ button:hover {
   position: relative;
 }
 
+.container-detalhe {
+  width: 800px;
+  background: #fff;
+  border-radius: 10px;
+  position: relative;
+}
+
+
 
 
 /* Form */
