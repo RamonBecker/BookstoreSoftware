@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView, DetailView, DeleteView
+from django.views.generic import ListView, DetailView, DeleteView, UpdateView
 
 
 from .models import CustomUsuario
@@ -49,6 +49,13 @@ class LivrosListView(ListView):
     queryset = Livro.objects.all()
     context_object_name = 'livros'
 
+
+class EmprestimosListView(ListView):
+    model = EmprestimoLivro
+    template_name = 'livraria/produto/exibir_emprestimos.html'
+    queryset = EmprestimoLivro.objects.all()
+    context_object_name = 'emprestimos'
+    
 
 class IndexView(ListView):
     models = Livro
@@ -99,18 +106,26 @@ class CreateLivroView(LoginRequiredMixin, SuccessMessageMixin,CreateView):
             autor = formLivro.cleaned_data['autor'] 
             categoria = formLivro.cleaned_data['categoria']
 
-            aux_editora, created = Editora.objects.get_or_create(id=editora.id)
-            aux_autor, created = Autor.objects.get_or_create(id=autor.id)
-            aux_categoria, created = Categoria.objects.get_or_create(nome=categoria)
-           
-            preco_total = preco * estoque
-            
-            livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria, preco_total=preco_total)
+            if estoque <= 0:
+                messages.error(request,'O estoque não pode ser zero ou negativo')
 
-            messages.success(request,'Cadastro realizado com sucesso!')
-            livro.save()
+            elif num_paginas <= 0:
+                messages.error(request,'O número de páginas não pode ser zero ou negativo')
+
+            else:
+
+                aux_editora, created = Editora.objects.get_or_create(id=editora.id)
+                aux_autor, created = Autor.objects.get_or_create(id=autor.id)
+                aux_categoria, created = Categoria.objects.get_or_create(nome=categoria)
             
-            formLivro = LivroCreationForm()
+                preco_total = preco * estoque
+                
+                livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria, preco_total=preco_total)
+
+                messages.success(request,'Cadastro realizado com sucesso!')
+                livro.save()
+                
+                formLivro = LivroCreationForm()
 
 
         context = {'formLivro': formLivro,

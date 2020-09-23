@@ -6,7 +6,7 @@ from django.contrib import admin
 
 
 from django.views.generic.base import TemplateView
-from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro, LivrosListView, LivrosDetailView, DeleteLivroView
+from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro, EmprestimosListView, LivrosListView, LivrosDetailView, DeleteLivroView
 
 app_name = 'livraria'
 
@@ -21,6 +21,9 @@ urlpatterns = [
 
     #Emprestimo
     path('<int:pk>/emprestimolivro/', CreateEmprestimoLivro.as_view(), name='emprestarlivro'),
+
+    path('exibiremprestimos', EmprestimosListView.as_view(), name='listaremprestimos'),
+
     #Exibição de livros
     path('exibirlivros', LivrosListView.as_view(), name='listarlivros'),
 
