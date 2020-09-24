@@ -29,6 +29,7 @@ class DeleteLivroView(DeleteView):
     success_url = reverse_lazy('livraria:listarlivros')
     success_message = 'Livro deletado com sucesso!'
 
+
 class LivrosDetailView(DetailView):
      model = Livro
     #queryset = Livro.objects.all()
@@ -55,7 +56,7 @@ class EmprestimosListView(ListView):
     template_name = 'livraria/produto/exibir_emprestimos.html'
     queryset = EmprestimoLivro.objects.all()
     context_object_name = 'emprestimos'
-    
+
 
 class IndexView(ListView):
     models = Livro
@@ -205,7 +206,6 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
     redirect_field_name = 'login'
     form_class = EmprestimoLivroCreationForm
     template_name = 'livraria/forms/emprestimo_livro.html'
-    #success_url = reverse_lazy('livraria:cadastrarautor')
 
     def get(self, request, *args, **kwargs):
         livro = Livro.objects.get(pk=self.kwargs['pk'])
@@ -273,32 +273,85 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                     verificacao_campo_data_devolucao =  formEmprestimo.fields['data_devolucao'].widget.attrs['disabled']
                     print('Data devolucao:', verificacao_campo_data_devolucao)
 
-                    verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']
-                    
-                    
-                    
-
-
-                   
+                    verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']         
 
         context = {'formEmprestimo': formEmprestimo,
                            'livro': livro
                     }
-                  
-
-        #if formEmprestimo.is_valid():
-            #request.session['temp_data'] = livro
-   
-            
-            #return render(request, 'livraria/forms/emprestimo_confirm.html', context)
-            #return redirect('livraria:confirmaremprestimo')
-
+    
         return render(request, 'livraria/forms/emprestimo_livro.html', context)
 
 
+class LivroUpdateView(LoginRequiredMixin, UpdateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
+
+    def get(self, request, *args, **kwargs):
+        livro = Livro.objects.get(pk=self.kwargs['pk'])
+        formLivro = LivroCreationForm(instance=livro)
+        context = {'formLivro': formLivro,}
+        return render(request, 'livraria/forms/editar_livro.html', context)
+
+    def post(self, request, *args, **kwargs):
+        livro = Livro.objects.get(pk=self.kwargs['pk'])
+        print('Print Livro POST', livro)
+        formLivro = LivroCreationForm(request.POST or None)
+
+        if formLivro.is_valid():
 
 
+            preco = formLivro.cleaned_data['preco']
+            estoque = formLivro.cleaned_data['estoque']
+
+            livro.nome = formLivro.cleaned_data['nome']
+            livro.preco = formLivro.cleaned_data['preco']
+            livro.estoque = formLivro.cleaned_data['estoque'] 
+            livro.edicao = formLivro.cleaned_data['edicao']
+            livro.ano = formLivro.cleaned_data['ano']
+            livro.num_paginas = formLivro.cleaned_data['num_paginas']
+            livro.descricao = formLivro.cleaned_data['descricao']
+
+            editora = formLivro.cleaned_data['editora']
+            autor = formLivro.cleaned_data['autor']
+            categoria = formLivro.cleaned_data['categoria']
+          
+
+            if livro.estoque <= 0:
+                messages.error(request,'O estoque não pode ser zero ou negativo')
+
+            elif livro.num_paginas <= 0:
+                messages.error(request,'O número de páginas não pode ser zero ou negativo')
+
+            else:
+
+                aux_editora, created = Editora.objects.get_or_create(id=editora.id)
+                aux_autor, created = Autor.objects.get_or_create(id=autor.id)
+                aux_categoria, created = Categoria.objects.get_or_create(nome=categoria)
+            
+                livro.preco_total = preco * estoque
+                livro.editora = aux_editora
+                livro.autor = aux_autor
+                livro.categoria = aux_categoria
+                #livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria, preco_total=preco_total)
+
+                messages.success(request,'Cadastro realizado com sucesso!')
+                livro.save()
+                
+                formLivro = LivroCreationForm()
+                return redirect('livraria:listarlivros')
+
+
+
+        context = {'formLivro': formLivro,}
+          #        'editoras': editoras,
+                 #  'autores': autores
+            #      }
+
+        return render(request, 'livraria/forms/editar_livro.html', context)
+    
 '''
+
+
 
 from .forms import LivroForm, EditoraForm, EnderecoForm, AutorForm
 from .models import Editora, Endereco, Autor, Livro, Categoria, EmprestimoLivro

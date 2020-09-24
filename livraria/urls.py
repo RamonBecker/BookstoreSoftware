@@ -6,7 +6,7 @@ from django.contrib import admin
 
 
 from django.views.generic.base import TemplateView
-from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro, EmprestimosListView, LivrosListView, LivrosDetailView, DeleteLivroView
+from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro, EmprestimosListView, LivrosListView, LivrosDetailView, DeleteLivroView, LivroUpdateView
 
 app_name = 'livraria'
 
@@ -29,6 +29,10 @@ urlpatterns = [
 
     #detalhe
     url(r'^detalhelivro/(?P<pk>[0-9]+)/$', LivrosDetailView.as_view(), name='detaillivro'),
+
+    #Editar
+
+    url(r'^edicaolivro/(?P<pk>[0-9]+)/$', LivroUpdateView.as_view(), name='editarlivro'),
 
     #excluir livro
     path('<int:pk>deletarlivro', DeleteLivroView.as_view(), name='deletelivro'),
