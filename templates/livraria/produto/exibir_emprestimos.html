@@ -8,10 +8,11 @@
 <div class="limiter">
     <div class="container-login100">
         
-
+        
     {% if emprestimos %}
         <div class="tabelalivros p-l-15 p-r-31 p-t-62 p-b-33">
-             
+            {% include 'livraria/message/message.html' %}
+
             <span class="login100-form-title p-b-53">
                 Meus empréstimos
             </span>
@@ -54,7 +55,7 @@
                         {% endifchanged %}
 
                         <td scope="row">
-                            <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">add box</a>
+                            <a href="{% url 'livraria:devolverlivro' emprestimo.id %}" class="btn btn-primary active" role="button" aria-pressed="true">Devolver</a>
                         </td>
 
                     {% endfor %}

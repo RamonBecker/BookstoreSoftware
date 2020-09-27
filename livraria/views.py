@@ -18,10 +18,15 @@ from django.contrib import messages
 from django.utils import timezone
 
 
+# ----------- Variáveis globais ------------
+
 verificacao_campo_data_devolucao = None
 verificacao_campo_quantidade = None
 aux_instance_form = None
+verificacao_botao_salvar = True
 
+
+# ----------- DeleteView ------------
 
 class DeleteLivroView(DeleteView):
     model = Livro
@@ -29,6 +34,8 @@ class DeleteLivroView(DeleteView):
     success_url = reverse_lazy('livraria:listarlivros')
     success_message = 'Livro deletado com sucesso!'
 
+
+# ----------- DetailView ------------
 
 class LivrosDetailView(DetailView):
      model = Livro
@@ -43,6 +50,7 @@ class LivrosDetailView(DetailView):
      #  id_ = self.kwargs.get("id")
       #  return get_object_or_404(Livro, id=id_)
 
+# ----------- ListView ------------
 
 class LivrosListView(ListView):
     model = Livro
@@ -51,7 +59,7 @@ class LivrosListView(ListView):
     context_object_name = 'livros'
 
 
-class EmprestimosListView(ListView):
+class ListEmprestimosView(ListView):
     model = EmprestimoLivro
     template_name = 'livraria/produto/exibir_emprestimos.html'
     queryset = EmprestimoLivro.objects.all()
@@ -64,6 +72,8 @@ class IndexView(ListView):
     queryset = Livro.objects.all()
     context_object_name = 'livros'
 
+
+# ----------- CreateView ------------
 
 class SignUpView(SuccessMessageMixin,CreateView):
     form_class = CustomUsuarioCreationForm
@@ -210,9 +220,13 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
     def get(self, request, *args, **kwargs):
         livro = Livro.objects.get(pk=self.kwargs['pk'])
         formEmprestimo = super(CreateEmprestimoLivro, self).get_form()
+        global verificacao_botao_salvar
+        #aux_instance_form = formEmprestimo
 
         context = {'formEmprestimo': formEmprestimo,
-                   'livro': livro}
+                   'livro': livro, 
+                   'verificacao_botao_salvar':verificacao_botao_salvar
+                   }
         
         return render(request, 'livraria/forms/emprestimo_livro.html',context)
 
@@ -222,6 +236,8 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
         global verificacao_campo_data_devolucao
         global verificacao_campo_quantidade
         global aux_instance_form
+        global verificacao_botao_salvar
+
         if verificacao_campo_data_devolucao == None and verificacao_campo_quantidade == None: 
             formEmprestimo = self.get_form()
             aux_instance_form = formEmprestimo
@@ -250,8 +266,6 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                 calculo_emprestimo = livro.preco * quantidade
                 formEmprestimo.fields['preco'].initial = calculo_emprestimo
 
-
-
                 livro.estoque = livro.estoque - quantidade
 
                 if not verificacao_campo_quantidade == None and  not verificacao_campo_data_devolucao == None:
@@ -262,10 +276,17 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                         print('Estoque:',livro.estoque)
                         livro.preco_total = livro.preco_total - calculo_emprestimo
                        
-
+                       
+                        #verificacao_botao_confirmar = False
+                        verificacao_botao_salvar = False
+                        
                         livro.save()
                         emprestimo.save()
                         messages.success(request, 'Empréstimo realizado com sucesso!')
+                        verificacao_campo_quantidade = False
+                        verificacao_campo_data_devolucao = False
+                        
+                        #aux_instance_form = EmprestimoLivroCreationForm()
                 else:
                     formEmprestimo.fields['data_devolucao'].widget.attrs['disabled'] = True
                     formEmprestimo.fields['quantidade'].widget.attrs['disabled'] = True
@@ -273,16 +294,20 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                     verificacao_campo_data_devolucao =  formEmprestimo.fields['data_devolucao'].widget.attrs['disabled']
                     print('Data devolucao:', verificacao_campo_data_devolucao)
 
-                    verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']         
+                    verificacao_campo_quantidade = formEmprestimo.fields['quantidade'].widget.attrs['disabled']
+                    #   
 
         context = {'formEmprestimo': formEmprestimo,
-                           'livro': livro
+                    'livro': livro,
+                    'verificacao_botao_salvar':verificacao_botao_salvar
                     }
+        verificacao_botao_salvar = True
     
         return render(request, 'livraria/forms/emprestimo_livro.html', context)
 
 
-class LivroUpdateView(LoginRequiredMixin, UpdateView):
+# ----------- UpdateView ------------
+class UpdateLivroView(LoginRequiredMixin, UpdateView):
     login_url = 'login'
     redirect_field_name = 'login'
 
@@ -294,7 +319,6 @@ class LivroUpdateView(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         livro = Livro.objects.get(pk=self.kwargs['pk'])
-        print('Print Livro POST', livro)
         formLivro = LivroCreationForm(request.POST or None)
 
         if formLivro.is_valid():
@@ -322,6 +346,9 @@ class LivroUpdateView(LoginRequiredMixin, UpdateView):
             elif livro.num_paginas <= 0:
                 messages.error(request,'O número de páginas não pode ser zero ou negativo')
 
+            elif livro.preco <= 0:
+                messages.error(request,'O preço não pode ser zero ou negativo')
+
             else:
 
                 aux_editora, created = Editora.objects.get_or_create(id=editora.id)
@@ -332,7 +359,6 @@ class LivroUpdateView(LoginRequiredMixin, UpdateView):
                 livro.editora = aux_editora
                 livro.autor = aux_autor
                 livro.categoria = aux_categoria
-                #livro, created = Livro.objects.get_or_create(nome=nome, preco=preco, estoque=estoque, edicao=edicao, ano=ano, num_paginas=num_paginas, descricao=descricao, editora=aux_editora, autor=aux_autor, categoria=aux_categoria, preco_total=preco_total)
 
                 messages.success(request,'Cadastro realizado com sucesso!')
                 livro.save()
@@ -343,186 +369,29 @@ class LivroUpdateView(LoginRequiredMixin, UpdateView):
 
 
         context = {'formLivro': formLivro,}
-          #        'editoras': editoras,
-                 #  'autores': autores
-            #      }
-
-        return render(request, 'livraria/forms/editar_livro.html', context)
-    
-'''
-
-
-
-from .forms import LivroForm, EditoraForm, EnderecoForm, AutorForm
-from .models import Editora, Endereco, Autor, Livro, Categoria, EmprestimoLivro
-from .forms import Livro_Emprestimo_Form, EmprestimoForm
-
-from decimal import Decimal
-
-#Variaveis globais
-val_block = True
-emprestimo_save = None
-
-# Funções para realizar cadastros
-
-
-
-# Mostrar listagem de livros
-@login_required
-def livraria_exibir_livros(request):
-
-    list_Livros = Livro.objects.all().values()
-
-    list_preco_total = []
-    context= {
-        'livros': Livro.objects.all(),
-        'livros_preco_total':list_preco_total,
-        'emprestimos':EmprestimoLivro.objects.all(),
-    }
-
-    return render(request,'produto/exibir_produtos.html',context)
-
-
-@login_required
-def livraria_detalhe_livro(request, pk):
-
-    livro = get_object_or_404(Livro,id=pk)
-
-    context = {
-        'livro':livro,
-    }
-
-    return render(request,'produto/detalhe_produto.html', context)
-
-@login_required
-def livraria_editar_livro(request,pk):
-
-    livro = get_object_or_404(Livro, pk=pk)
-    
-    formLivro = LivroForm(request.POST or None)
-    formAutor = AutorForm(request.POST or None)
-
-    if str(request.method) == 'POST':
-        formLivro = LivroForm(request.POST, instance=livro)
-        if formLivro.is_valid() and formAutor.is_valid():
-                #livro = formLivro.save(commit=False)
  
-            livro = formLivro.save(commit=False)
-            livro.nome = formLivro.cleaned_data['nome']
-            livro.preco = formLivro.cleaned_data['preco']
-            livro.estoque = formLivro.cleaned_data['estoque']
-            livro.num_paginas = formLivro.cleaned_data['num_paginas']
-            livro.edicao = formLivro.cleaned_data['edicao']
-            livro.descricao = formLivro.cleaned_data['descricao']
-            livro.ano = formLivro.cleaned_data['ano']
-            nomeAutor = formAutor.cleaned_data['nomeAutor']
-            data_nascimento = formAutor.cleaned_data['ano']
+        return render(request, 'livraria/forms/editar_livro.html', context)
 
+class UpdateEmprestimoView(LoginRequiredMixin, UpdateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
 
-            livro.preco_total = livro.estoque * livro.preco
-            nomeCategoria = formLivro.cleaned_data['categorias']
+    def get(self, request, *args, **kwargs):
+        emprestimo = EmprestimoLivro.objects.get(pk=self.kwargs['pk'])
+        emprestimo.ativo = False
+        livro = emprestimo.livro
+        livro.estoque = livro.estoque + emprestimo.quantidade
+        emprestimo.quantidade = 0
+        livro.save()
+        emprestimo.save()
+        messages.success(request,'Livro devolvido com sucesso!')
 
-            autor,created = Autor.objects.get_or_create(nome=nomeAutor, data_nascimento=data_nascimento)
-            categoria, created = Categoria.objects.get_or_create(nome=nomeCategoria)
-                
-            livro.autor = autor
-            livro.categoria = categoria
-            livro.save()
-                
-            return redirect('livraria:livrariaexibirlivros')
-    else:
-        formLivro = LivroForm(instance=livro) 
-        formAutor = AutorForm()
+        return redirect('livraria:listaremprestimos')
 
-    context = {
-        'formLivro':formLivro,
-        'formAutor': formAutor,
-    }
-
-    return render(request,'forms/editar_produto.html',context)
-
-
-@login_required
-def livraria_deletar_livro(request, pk):
-    livro = get_object_or_404(Livro, pk=pk)
-    livro.delete()
-    return redirect('livraria:livrariaexibirlivros')
+ 
 
 
 
+def mostrar404(request):
 
-@login_required
-def livraria_realizar_emprestimo(request, pk):
-    global val_block
-    global emprestimo_save
-    livro = get_object_or_404(Livro, pk=pk)
-    form_livro = Livro_Emprestimo_Form(request.POST or None)
-    form_emprestimo = EmprestimoForm(request.POST or None)
-    calculo_final_emprestimo = 0   
-
-
-
-    if str(request.method) == 'POST':
-        if form_emprestimo.is_valid():
-            data_inicial = form_emprestimo.cleaned_data['data_inicial']
-            data_devolucao = form_emprestimo.cleaned_data['data_devolucao']
-            quantidade = form_emprestimo.cleaned_data['quantidade']
-            form_emprestimo.cleaned_data.get('preco')
-            diferenca_data = data_devolucao - data_inicial
-
-
-            if quantidade == 0:
-                messages.error(request,'A quantidade não pode ser zero')
-
-            elif quantidade > livro.estoque:
-                messages.error(request,'A quantidade a ser emprestada, não pode ser maior que o estoque do livro')
-
-            elif diferenca_data.days < 0:
-                messages.error(request,'A data de devolução, não pode ser menor que a data inicio')
-            elif not val_block:
-                livro.estoque = livro.estoque -quantidade
-                emprestimo_save.save()
-                livro.save()
-                emprestimo_save = None
-                val_block = True
-                return redirect('livraria:livrariaexibirlivros')
-            else:
-                calculo_Inicial_Emprestimo = Decimal(diferenca_data.days / 100)
-                arrendondamento_calculo_emprestimo = round(calculo_Inicial_Emprestimo,2)
-                calculo_final_emprestimo = livro.preco * arrendondamento_calculo_emprestimo
-               
-                if val_block:
-                    emprestimo, created = EmprestimoLivro.objects.get_or_create(user=request.user,livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_final_emprestimo, ativo=True, quantidade=quantidade)
-                    emprestimo_save = emprestimo
-                    livro.estoque = livro.estoque -quantidade
-                    val_block = False
-            
-                    
-    else:
-        form_livro = Livro_Emprestimo_Form(instance=livro)
-        form_emprestimo = EmprestimoForm()
-        messages.warning(request,'Atenção, voce precisa salvar para ser calculado o preço do empréstimo')
-    
-    form_emprestimo.fields['preco'].initial = calculo_final_emprestimo
-
-    context = {
-        'form_livro':form_livro,
-        'form_emprestimo':form_emprestimo,
-        'livro':livro,
-    }
-    
-    return render(request, 'forms/emprestimo_livro.html', context)
-
-@login_required
-def livraria_devolver_livro(request, pk):
-
-    emprestimo = get_object_or_404(EmprestimoLivro, pk=pk)
-    livro = emprestimo.livro
-    emprestimo.ativo = False
-    livro.estoque = livro.estoque + emprestimo.quantidade
-    emprestimo.quantidade = 0
-    livro.save()
-    emprestimo.save()
-    return redirect('livraria:livrariaexibirlivros')
-
-'''
+    return render(request,'livraria/teste404.html')

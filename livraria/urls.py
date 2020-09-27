@@ -6,7 +6,7 @@ from django.contrib import admin
 
 
 from django.views.generic.base import TemplateView
-from .views import SignUpView, CreateLivroView, CreateEditoraView, CreateAutorView,IndexView, CreateEmprestimoLivro, EmprestimosListView, LivrosListView, LivrosDetailView, DeleteLivroView, LivroUpdateView
+from .views import SignUpView, IndexView ,CreateLivroView, CreateEditoraView, CreateAutorView,CreateEmprestimoLivro, ListEmprestimosView, UpdateEmprestimoView, LivrosListView,LivrosDetailView, UpdateLivroView, DeleteLivroView, mostrar404
 
 app_name = 'livraria'
 
@@ -22,7 +22,11 @@ urlpatterns = [
     #Emprestimo
     path('<int:pk>/emprestimolivro/', CreateEmprestimoLivro.as_view(), name='emprestarlivro'),
 
-    path('exibiremprestimos', EmprestimosListView.as_view(), name='listaremprestimos'),
+    path('exibiremprestimos', ListEmprestimosView.as_view(), name='listaremprestimos'),
+
+    #path('<int>:pk/devolucaolivro/', UpdateEmprestimoView.as_view(), name='devolverlivro'),
+
+     url(r'^devolucaolivro/(?P<pk>[0-9]+)/$', UpdateEmprestimoView.as_view(), name='devolverlivro'),
 
     #Exibição de livros
     path('exibirlivros', LivrosListView.as_view(), name='listarlivros'),
@@ -32,21 +36,13 @@ urlpatterns = [
 
     #Editar
 
-    url(r'^edicaolivro/(?P<pk>[0-9]+)/$', LivroUpdateView.as_view(), name='editarlivro'),
+    url(r'^edicaolivro/(?P<pk>[0-9]+)/$', UpdateLivroView.as_view(), name='editarlivro'),
 
     #excluir livro
     path('<int:pk>deletarlivro', DeleteLivroView.as_view(), name='deletelivro'),
 
-    #Detalhes do livros
-    #path('/livraria_detalhe_livro/<int:pk>', livraria_detalhe_livro,name='livrariadetalhelivro'),
 
-    #Editar livors
-    #path('/livraria_editarlivro/<int:pk>',livraria_editar_livro, name='livrariaeditarlivro'),
-
-    #Deletar livro
-   # path('/livraria_deletarlivro/<int:pk>', livraria_deletar_livro, name='livrariadeletarlivro'),
-
-
+    path('mostrar404/', mostrar404, name='teste404'),
     #Devolver Livro
     ##path('/livraria_devolver_livro/<int:pk>',livraria_devolver_livro, name='livrariadevolverlivro')
 

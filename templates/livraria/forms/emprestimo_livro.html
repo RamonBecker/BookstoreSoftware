@@ -46,14 +46,22 @@
                     </div>
 
                   <div>
-                    <button class="login100-form-btn" type="submit">
-                        Salvar
-                    </button>
 
-                    <a class="login100-form-btn btn-warning" href="/">
-                        Cancelar
-               
-                    </a>
+                    {% if verificacao_botao_salvar %}
+
+                            <button class="login100-form-btn" type="submit">
+                                 Salvar
+                            </button>
+
+                            <a class="login100-form-btn btn-warning" href="/">
+                                Cancelar
+                            </a>                
+                    {% else %}
+                        <a class="login100-form-btn btn-warning" href="/">
+                            Voltar para página inicial
+                        </a>
+                    {% endif %}
+
                 </div>
                     <div class="p-t-10"></div>
                 </form>  
