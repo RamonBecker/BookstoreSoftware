@@ -4,9 +4,6 @@
 {% block content %}
 
 
-
-
-
 <div class="limiter">
     <div class="container-login100">
         <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
@@ -22,12 +19,7 @@
                     
                     {% csrf_token %}
                     <div class="textRegisterForm">
-
-
-
-
-                        {{formLivro|crispy}}
-                        
+                        {{formLivro|crispy}}                        
                     </div>
                     <button class="login100-form-btn  " type="submit">
                         Salvar

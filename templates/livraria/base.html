@@ -67,7 +67,7 @@
             <li class="nav-item dropdown p-r-30">
               <a href="#" class="nav-link dropdown-toggle fs-15 text-white " data-toggle="dropdown">Seja bem vindo, {{ user.first_name }} {{user.last_name}}</a>
               <div class="dropdown-menu">
-                <a href="#" class="dropdown-item">Minha conta</a>
+                <a href="{% url 'livraria:profileuser' %}" class="dropdown-item">Minha conta</a>
               </div>
           </li>
 

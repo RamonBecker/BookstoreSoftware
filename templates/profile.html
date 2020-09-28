@@ -1,0 +1,72 @@
+{% extends 'livraria/base.html' %}
+
+{% block content %}
+
+<div class="limiter">
+    <div class="container-login100">
+     
+        <div class="wrap-login100 p-l-110 p-r-110 p-t-62 p-b-33">
+            <span class="login100-form-title p-b-53">
+           
+                Meu Perfil
+                {% include 'livraria/message/message.html' %}
+              </span>
+              <div class="textRegisterForm">
+                <div class="card mb-3 border border-dark">
+                    <div class="card-header bg-dark mb-3 text-white">
+                      <div class="text-center ">
+                        <i class="fa fa-user fa-4x" aria-hidden="true"></i>
+                            
+                        </div>
+                    </div>
+                    <div class="text-center">
+                    <div class="card-body">
+                     Usuário: {{user.username}}
+                    </div>
+                        <ul class="list-group">
+                            <div class="textRegisterForm fs-14">
+                                <li class="list-group-item  border border-dark"  id="textoCard">E-mail: {{user.email}}</li>
+
+                                <li class="list-group-item  border border-dark"  id="textoCard">Primeiro nome: 
+                                 {% if user.first_name %}
+                                   {{user.first_name}}
+                                 {% else %}
+                                  Não há primeiro nome cadastrado (Por favor atualize no botão abaixo!)
+                                {% endif %}
+                                </li>
+
+                                <li class="list-group-item  border border-dark"  id="textoCard">Último nome: 
+                                  {% if user.last_name %}
+                                    {{user.last_name}}
+                                  {% else %}
+                                   Não há último nome cadastrado (Por favor atualize no botão abaixo!)
+
+                                  {% endif %}
+                                </li>
+
+
+                                <li class="list-group-item  border border-dark"  id="textoCard">Telefone: 
+                                   {% if user.fone %}
+                                    {{user.fone}}
+                                    
+                                   {% else %}
+                                     Não há telefone cadastrado (Por favor atualize no botão abaixo!)
+
+                                   {% endif %}
+                                </li>
+                     
+                            </div>
+                            <a href="{% url 'livraria:updateuser' user.id %}" class="btn btn-warning">Atualizar perfil</a>
+                            <a href="/" class="btn btn-primary">Voltar para tela inicial</a>
+                        </ul>
+                    </div>
+                  </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

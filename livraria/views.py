@@ -3,19 +3,20 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 from django.views.generic.edit import CreateView
-from django.views.generic import ListView, DetailView, DeleteView, UpdateView
+from django.views.generic import TemplateView, ListView, DetailView, DeleteView, UpdateView
 
-
-from .models import CustomUsuario
 from django.urls import reverse_lazy
 
-from .forms import CustomUsuarioCreationForm, LivroCreationForm, EditoraCreateForm, AutorCreationForm, EmprestimoLivroCreationForm
+from .forms import CustomUsuarioCreationForm, CustomUsuarioChangeForm ,LivroCreationForm, EditoraCreateForm, AutorCreationForm, EmprestimoLivroCreationForm
 
-from .models import Livro, Categoria, Autor, Editora, Endereco, EmprestimoLivro
+from .models import Livro, Categoria, Autor, Editora, Endereco, EmprestimoLivro, CustomUsuario
 
 from django.shortcuts import render, reverse, redirect, get_object_or_404
 from django.contrib import messages
 from django.utils import timezone
+
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 
 # ----------- Variáveis globais ------------
@@ -24,6 +25,8 @@ verificacao_campo_data_devolucao = None
 verificacao_campo_quantidade = None
 aux_instance_form = None
 verificacao_botao_salvar = True
+
+
 
 
 # ----------- DeleteView ------------
@@ -372,6 +375,7 @@ class UpdateLivroView(LoginRequiredMixin, UpdateView):
  
         return render(request, 'livraria/forms/editar_livro.html', context)
 
+
 class UpdateEmprestimoView(LoginRequiredMixin, UpdateView):
     login_url = 'login'
     redirect_field_name = 'login'
@@ -389,9 +393,17 @@ class UpdateEmprestimoView(LoginRequiredMixin, UpdateView):
         return redirect('livraria:listaremprestimos')
 
  
+class ProfileUserView(LoginRequiredMixin, TemplateView):
+    login_url = 'login'
+    redirect_field_name = 'login'
+    template_name = 'profile.html'
 
 
-
-def mostrar404(request):
-
-    return render(request,'livraria/teste404.html')
+class UpdateUserView(LoginRequiredMixin, UpdateView, SuccessMessageMixin):
+    login_url = 'login'
+    redirect_field_name = 'login'
+    model = CustomUsuario
+    form_class = CustomUsuarioChangeForm
+    template_name = 'update_profile.html'
+    success_url = reverse_lazy('livraria:profileuser')
+    success_message = 'Dados atualizados com sucesso!'

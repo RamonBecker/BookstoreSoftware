@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, ReadOnlyPasswordHashField
 from django import forms
 from django.utils import timezone
 from datetime import datetime, date
@@ -43,7 +43,8 @@ class CustomUsuarioCreationForm(UserCreationForm):
 
 
 class CustomUsuarioChangeForm(UserChangeForm):
-
+    password = ReadOnlyPasswordHashField(label=("Senha"),
+        help_text=("Para atualizar a senha, você precisa clicar no botão de atualizar senha abaixo"))
     class Meta:
         model = CustomUsuario
         fields = ('first_name', 'last_name', 'fone', 'email')
@@ -93,19 +94,3 @@ class EmprestimoLivroCreationForm(forms.ModelForm):
 
 
 
-'''
-
-
-class EmprestimoForm(forms.Form):
-    data_inicial = forms.DateField(label='Data de início',disabled=True,initial=timezone.now)
-    data_devolucao = forms.DateField(label='Data de devolução',widget=DateInput)
-    quantidade = forms.IntegerField(label='Quantidade a ser emprestada', initial=0)
-    preco = forms.DecimalField(label='Preco a pagar pelo emprestimo',decimal_places=2,disabled=True, initial=0)
-  
-class Livro_Emprestimo_Form(forms.ModelForm):
-    nome = forms.CharField(required=True,max_length=100)
-    class Meta:
-        model = Livro
-        fields = ('nome',)
-
-'''
