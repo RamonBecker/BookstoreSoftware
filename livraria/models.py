@@ -78,7 +78,7 @@ class Autor(models.Model):
         verbose_name_plural = 'Autores'
 
     def __str__(self):
-        return "'{}'-'{}'".format(self.nome,self.data_nascimento)
+        return self.nome
 
 
 class Livro(Produto):
@@ -96,7 +96,7 @@ class Livro(Produto):
         verbose_name_plural = 'Livros'
 
     def __str__(self):
-        return "'{}'-'{}'-'{} - {}'".format(self.autor, self.edicao, self.ano, self.editora)
+        return self.nome
 
 
 class Editora(models.Model):
@@ -108,7 +108,7 @@ class Editora(models.Model):
         verbose_name_plural = 'Editoras'
 
     def __str__(self):
-        return "Nome:'{}'- Endereço:'{}'".format(self.nome, self.endereco)
+        return self.nome
 
 
 class Endereco(models.Model):
@@ -144,7 +144,7 @@ class Categoria(models.Model):
         verbose_name_plural = 'Categorias'
 
     def __str__(self):
-        return "'{}'".format(self.nome)
+        return self.nome
 
 
 

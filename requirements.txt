@@ -1,6 +1,8 @@
 asgiref==3.2.7
+coverage==5.3
 Django==3.0.6
+django-crispy-forms==1.9.1
+model-mommy==2.0.0
+mysqlclient==1.4.6
 pytz==2020.1
 sqlparse==0.3.1
-mysqlclient
-django-crispy-forms==1.9.1
