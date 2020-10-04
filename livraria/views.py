@@ -120,6 +120,8 @@ class CreateLivroView(LoginRequiredMixin, SuccessMessageMixin,CreateView):
             autor = formLivro.cleaned_data['autor'] 
             categoria = formLivro.cleaned_data['categoria']
 
+
+            print(formLivro.cleaned_data)
             if estoque <= 0:
                 messages.error(request,'O estoque não pode ser zero ou negativo')
 
@@ -203,7 +205,7 @@ class CreateAutorView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
             nome = formAutor.cleaned_data['nome']
             data_nascimento = formAutor.cleaned_data['data_nascimento']
-
+            print('data nascimento:', data_nascimento)
             autor, created = Autor.objects.get_or_create(nome=nome, data_nascimento=data_nascimento)
             messages.success(request,'Cadastro realizado com sucesso!')
             autor.save()
@@ -254,7 +256,9 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
             preco_total = formEmprestimo.cleaned_data['preco']
             diferenca_data = data_devolucao - data_inicial
 
-            
+            print('DATA INCIAL', data_inicial)
+            print('DATA DEVOULAÇÂO:', data_devolucao)
+            print('DIFERENÇA', diferenca_data.days)
             if quantidade == 0:
                 
                 messages.error(request,'A quantidade não pode ser zero')
@@ -274,9 +278,9 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                 if not verificacao_campo_quantidade == None and  not verificacao_campo_data_devolucao == None:
                     
                     if verificacao_campo_quantidade and verificacao_campo_data_devolucao:
+                        
                         emprestimo, created = EmprestimoLivro.objects.get_or_create(user=request.user,livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
-                        print('Preco total:',livro.preco_total)
-                        print('Estoque:',livro.estoque)
+
                         livro.preco_total = livro.preco_total - calculo_emprestimo
                        
                        

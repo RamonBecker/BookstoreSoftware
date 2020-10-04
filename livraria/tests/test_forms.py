@@ -16,8 +16,8 @@ class CustomUsuarioCreationFormTestCase(TestCase):
             'password2': self.user.password,
         }
         self.form = CustomUsuarioCreationForm(data=self.dados)
-
-    def test_form_valid(self):
+       
+    def test_save(self):
 
         res1 = None
         res2 = None

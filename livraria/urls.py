@@ -28,7 +28,6 @@ urlpatterns = [
 
     path('exibiremprestimos', ListEmprestimosView.as_view(), name='listaremprestimos'),
 
-    #path('<int>:pk/devolucaolivro/', UpdateEmprestimoView.as_view(), name='devolverlivro'),
 
      url(r'^devolucaolivro/(?P<pk>[0-9]+)/$', UpdateEmprestimoView.as_view(), name='devolverlivro'),
 
