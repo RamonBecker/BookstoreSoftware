@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     'blog.apps.BlogConfig',
     'livraria.apps.LivrariaConfig',
     'crispy_forms',
-    'sweetify',
+
 ]
 
 MIDDLEWARE = [
