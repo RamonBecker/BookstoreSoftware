@@ -1,5 +1,37 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
+
+
+
+from .models import Autor, Livro, Editora, Categoria, EmprestimoLivro
+
+
+@admin.register(Autor)
+class AutorAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'data_nascimento')
+
+
+@admin.register(Livro)
+class LivroAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'preco', 'estoque', 'preco_total', 'autor', 'editora', 'categoria')
+
+
+@admin.register(Editora)
+class  EditoraAdmin(admin.ModelAdmin):
+    list_display = ('nome', 'endereco')
+
+
+@admin.register(Categoria)
+class CategoriaAdmin(admin.ModelAdmin):
+    list_display = ('nome',)
+
+
+@admin.register(EmprestimoLivro)
+class EmprestimoAdmin(admin.ModelAdmin):
+    list_display = ('user', 'livro', 'data_inicial', 'data_devolucao', 'preco', 'ativo', 'quantidade')
+
+
+
 '''
 from .forms import CustomUsuarioCreationForm, CustomUsuarioChangeForm
 from .models import CustomUsuario
