@@ -393,8 +393,8 @@ class UpdateEmprestimoView(LoginRequiredMixin, UpdateView):
         emprestimo.ativo = False
         livro = emprestimo.livro
         livro.estoque = livro.estoque + emprestimo.quantidade
-        aux_preco_total = emprestimo.quantidade * emprestimo.preco
-        livro.preco_total += aux_preco_total
+        #aux_preco_total = emprestimo.quantidade * emprestimo.preco
+        livro.preco_total = livro.estoque * livro.preco
         emprestimo.quantidade = 0
         livro.save()
         emprestimo.save()
