@@ -53,10 +53,23 @@
                             <td scope="row">Devolvido</td>
                         {% endif %}
                         {% endifchanged %}
-
+                        
+                        {% if emprestimo.ativo %}
                         <td scope="row">
                             <a href="{% url 'livraria:devolverlivro' emprestimo.id %}" class="btn btn-primary active" role="button" aria-pressed="true">Devolver</a>
                         </td>
+                        {% elif not emprestimo.ativo %}
+                        
+                        <td scope="row">
+                            <button type="button"  class="btn btn-primary btn-sm">
+                                <span class="material-icons">close</span>
+                                Ação não disponivel
+                             </button>
+                        </td>
+
+                       
+
+                        {% endif %}
 
                     {% endfor %}
                             </tr> 

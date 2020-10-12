@@ -228,6 +228,7 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
         global verificacao_botao_salvar
         #aux_instance_form = formEmprestimo
 
+
         context = {'formEmprestimo': formEmprestimo,
                    'livro': livro, 
                    'verificacao_botao_salvar':verificacao_botao_salvar
@@ -246,7 +247,10 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
         if verificacao_campo_data_devolucao == None and verificacao_campo_quantidade == None: 
             formEmprestimo = self.get_form()
             aux_instance_form = formEmprestimo
+           # print('FORM emprestimo:', formEmprestimo)
+            print('CAiu na verificação da data')
         else:
+            print('CAiu no else')
             formEmprestimo = aux_instance_form
       
         if formEmprestimo.is_valid():
@@ -279,7 +283,7 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                     
                     if verificacao_campo_quantidade and verificacao_campo_data_devolucao:
                         
-                        emprestimo, created = EmprestimoLivro.objects.get_or_create(user=request.user,livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
+                        emprestimo = EmprestimoLivro.objects.create(user=request.user,livro=livro, data_inicial=data_inicial, data_devolucao=data_devolucao, preco=calculo_emprestimo,ativo=True,quantidade=quantidade)
 
                         livro.preco_total = livro.preco_total - calculo_emprestimo
                        
@@ -290,10 +294,10 @@ class CreateEmprestimoLivro(LoginRequiredMixin, SuccessMessageMixin, CreateView)
                         livro.save()
                         emprestimo.save()
                         messages.success(request, 'Empréstimo realizado com sucesso!')
-                        verificacao_campo_quantidade = False
-                        verificacao_campo_data_devolucao = False
-                        
-                        #aux_instance_form = EmprestimoLivroCreationForm()
+                        verificacao_campo_quantidade = None
+                        verificacao_campo_data_devolucao = None
+                        #aux_instance_form = formEmprestimo
+                        #
                 else:
                     formEmprestimo.fields['data_devolucao'].widget.attrs['disabled'] = True
                     formEmprestimo.fields['quantidade'].widget.attrs['disabled'] = True
@@ -389,6 +393,8 @@ class UpdateEmprestimoView(LoginRequiredMixin, UpdateView):
         emprestimo.ativo = False
         livro = emprestimo.livro
         livro.estoque = livro.estoque + emprestimo.quantidade
+        aux_preco_total = emprestimo.quantidade * emprestimo.preco
+        livro.preco_total += aux_preco_total
         emprestimo.quantidade = 0
         livro.save()
         emprestimo.save()
