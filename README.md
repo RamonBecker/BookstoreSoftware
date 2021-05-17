@@ -27,14 +27,14 @@ For the development of the bookstore system, basic functionalities were implemen
 
 ![](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 ```sh
-git clone https://github.com/RamonBecker/CentralizedModel.git
+git clone https://github.com/RamonBecker/BookstoreSoftware.git
 ```
 
 ![](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 
 
 ```sh
-git clone https://github.com/RamonBecker/CentralizedModel.git
+git clone https://github.com/RamonBecker/BookstoreSoftware.git
 or install github https://desktop.github.com/ 
 
 ```
